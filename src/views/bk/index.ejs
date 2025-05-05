@@ -1,0 +1,60 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Bahan Kajian (BK)</h2>
+  </div>
+  <div class="col text-end">
+    <a href="/bk/form" class="btn btn-primary">Add New Bahan Kajian</a>
+  </div>
+</div>
+
+<table class="table table-bordered table-striped">
+  <thead class="table-dark">
+    <tr>
+      <th>No</th>
+      <th>Kode BK</th>
+      <th>Bahan Kajian</th>
+      <th>Deskripsi</th>
+      <th>Kompetensi</th>
+      <th>Referensi</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (bahanKajians && bahanKajians.length > 0) { %> <%
+    bahanKajians.forEach((bk, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= bk.kode_bk %></td>
+      <td><%= bk.bahan_kajian %></td>
+      <td><%= bk.deskripsi %></td>
+      <td>
+        <% if (bk.kompetensi === 'Utama') { %>
+        <span class="badge bg-primary"><%= bk.kompetensi %></span>
+        <% } else if (bk.kompetensi === 'Umum') { %>
+        <span class="badge bg-success"><%= bk.kompetensi %></span>
+        <% } else { %>
+        <span class="badge bg-secondary"><%= bk.kompetensi %></span>
+        <% } %>
+      </td>
+      <td><%- bk.referensi.replace(/\n/g, '<br />') %></td>
+      <td>
+        <a href="/bk/edit/<%= bk.id %>" class="btn btn-sm btn-warning me-2"
+          >Edit</a
+        >
+        <a
+          href="/bk/delete/<%= bk.id %>"
+          class="btn btn-sm btn-danger"
+          onclick="return confirm('Are you sure you want to delete this bahan kajian?')"
+          >Delete</a
+        >
+      </td>
+    </tr>
+    <% }) %> <% } else { %>
+    <tr>
+      <td colspan="7" class="text-center">No bahan kajian available</td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<%- contentFor('title') %> Bahan Kajian

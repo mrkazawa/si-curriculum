@@ -1,6 +1,7 @@
 const plRoutes = require("./plRoutes");
 const cplRoutes = require("./cplRoutes");
 const mappingRoutes = require("./mappingRoutes");
+const bkRoutes = require("./bkRoutes");
 
 const setRoutes = (app) => {
   // Middleware to make path available to all views
@@ -25,6 +26,9 @@ const setRoutes = (app) => {
 
   // Use the mapping routes
   app.use("/mapping", mappingRoutes);
+
+  // Use the BK routes
+  app.use("/bk", bkRoutes);
 };
 
 module.exports = setRoutes;

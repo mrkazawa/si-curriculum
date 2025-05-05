@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>Add Bahan Kajian (BK)</h3>
+      </div>
+      <div class="card-body">
+        <% if (typeof error !== 'undefined') { %>
+        <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="/bk" method="POST">
+          <div class="mb-3">
+            <label for="kode_bk" class="form-label">Kode BK</label>
+            <input
+              type="text"
+              class="form-control"
+              id="kode_bk"
+              name="kode_bk"
+              required
+              placeholder="e.g., BK01"
+              value="<%= typeof formData !== 'undefined' ? formData.kode_bk : '' %>"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="bahan_kajian" class="form-label">Bahan Kajian</label>
+            <input
+              type="text"
+              class="form-control"
+              id="bahan_kajian"
+              name="bahan_kajian"
+              required
+              placeholder="e.g., Foundation of Information Systems"
+              value="<%= typeof formData !== 'undefined' ? formData.bahan_kajian : '' %>"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="deskripsi" class="form-label">Deskripsi</label>
+            <textarea
+              class="form-control"
+              id="deskripsi"
+              name="deskripsi"
+              rows="4"
+              required
+              placeholder="Deskripsi bahan kajian..."
+            ><%= typeof formData !== 'undefined' ? formData.deskripsi : '' %></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="kompetensi" class="form-label">Kompetensi</label>
+            <select class="form-select" id="kompetensi" name="kompetensi" required>
+              <option value="" disabled selected>Pilih Kompetensi</option>
+              <option value="Utama" <%= typeof formData !== 'undefined' && formData.kompetensi === 'Utama' ? 'selected' : '' %>>Utama</option>
+              <option value="Umum" <%= typeof formData !== 'undefined' && formData.kompetensi === 'Umum' ? 'selected' : '' %>>Umum</option>
+              <option value="Pendukung" <%= typeof formData !== 'undefined' && formData.kompetensi === 'Pendukung' ? 'selected' : '' %>>Pendukung</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="referensi" class="form-label">Referensi</label>
+            <textarea
+              class="form-control"
+              id="referensi"
+              name="referensi"
+              rows="3"
+              placeholder="e.g., - IS2020&#10;- SKKNI level 6 bidang TIK"
+            ><%= typeof formData !== 'undefined' ? formData.referensi : '' %></textarea>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/bk" class="btn btn-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('title') %> Add Bahan Kajian

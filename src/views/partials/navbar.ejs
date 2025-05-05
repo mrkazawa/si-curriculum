@@ -37,6 +37,14 @@
         </li>
         <li class="nav-item">
           <a
+            class="nav-link <%= path && path.startsWith('/bk') ? 'active' : '' %>"
+            href="/bk"
+          >
+            BK
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
             class="nav-link <%= path && path.startsWith('/mapping') ? 'active' : '' %>"
             href="/mapping"
           >
