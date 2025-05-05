@@ -26,7 +26,7 @@ const createTable = () => {
 createTable();
 
 // Model functions for mapping operations
-const MappingModel = {
+const CplPlMappingModel = {
   // Get all CPLs with their PL mappings
   getAllCplWithMappings: (callback) => {
     const query = `
@@ -83,4 +83,4 @@ const MappingModel = {
   },
 };
 
-module.exports = MappingModel;
+module.exports = CplPlMappingModel;

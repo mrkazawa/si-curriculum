@@ -1,4 +1,4 @@
-const MappingModel = require("../models/mappingModel");
+const CplPlMappingModel = require("../models/cplPlMappingModel");
 const CplModel = require("../models/cplModel");
 const PlModel = require("../models/plModel");
 
@@ -18,7 +18,7 @@ exports.renderMappingTable = (req, res) => {
       }
 
       // Get all mappings
-      MappingModel.getAllCplWithMappings((mappingErr, mappings) => {
+      CplPlMappingModel.getAllCplWithMappings((mappingErr, mappings) => {
         if (mappingErr) {
           console.error("Error fetching mappings:", mappingErr);
           return res.status(500).send("Error fetching mappings");
@@ -33,7 +33,7 @@ exports.renderMappingTable = (req, res) => {
           cplMappings[mapping.kode_cpl] = mappedPLs;
         });
 
-        res.render("mapping/index", {
+        res.render("cpl-pl-mapping/index", {
           cpls: cpls,
           pls: pls,
           cplMappings: cplMappings,
@@ -49,7 +49,7 @@ exports.updateMapping = (req, res) => {
 
   if (isChecked === "true") {
     // Create mapping
-    MappingModel.createMapping(kode_cpl, kode_pl, (err) => {
+    CplPlMappingModel.createMapping(kode_cpl, kode_pl, (err) => {
       if (err) {
         console.error("Error creating mapping:", err);
         return res
@@ -60,7 +60,7 @@ exports.updateMapping = (req, res) => {
     });
   } else {
     // Delete mapping
-    MappingModel.deleteMapping(kode_cpl, kode_pl, (err) => {
+    CplPlMappingModel.deleteMapping(kode_cpl, kode_pl, (err) => {
       if (err) {
         console.error("Error deleting mapping:", err);
         return res

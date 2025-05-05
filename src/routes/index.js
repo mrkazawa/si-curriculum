@@ -1,6 +1,6 @@
 const plRoutes = require("./plRoutes");
 const cplRoutes = require("./cplRoutes");
-const mappingRoutes = require("./mappingRoutes");
+const cplPlMappingRoutes = require("./cplPlMappingRoutes");
 const bkRoutes = require("./bkRoutes");
 
 const setRoutes = (app) => {
@@ -24,8 +24,8 @@ const setRoutes = (app) => {
   // Use the CPL routes
   app.use("/cpl", cplRoutes);
 
-  // Use the mapping routes
-  app.use("/mapping", mappingRoutes);
+  // Use the CPL-PL mapping routes
+  app.use("/cpl-pl-mapping", cplPlMappingRoutes);
 
   // Use the BK routes
   app.use("/bk", bkRoutes);
