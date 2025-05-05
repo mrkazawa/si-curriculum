@@ -1,0 +1,86 @@
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>Add Mata Kuliah (MK)</h3>
+      </div>
+      <div class="card-body">
+        <% if (typeof error !== 'undefined') { %>
+          <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="/mk" method="POST">
+          <div class="mb-3">
+            <label for="kode_mk" class="form-label">Kode MK</label>
+            <input
+              type="text"
+              class="form-control"
+              id="kode_mk"
+              name="kode_mk"
+              required
+              placeholder="e.g., MK01"
+              value="<%= typeof formData !== 'undefined' ? formData.kode_mk : '' %>"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="nama_mk" class="form-label">Nama Mata Kuliah</label>
+            <input
+              type="text"
+              class="form-control"
+              id="nama_mk"
+              name="nama_mk"
+              required
+              placeholder="e.g., Konsep Sistem Informasi"
+              value="<%= typeof formData !== 'undefined' ? formData.nama_mk : '' %>"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="kompetensi" class="form-label">Kompetensi</label>
+            <select class="form-select" id="kompetensi" name="kompetensi" required>
+              <option value="" disabled <%= typeof formData === 'undefined' ? 'selected' : '' %>>Pilih Kompetensi</option>
+              <option value="Utama" <%= typeof formData !== 'undefined' && formData.kompetensi === 'Utama' ? 'selected' : '' %>>Utama</option>
+              <option value="Pendukung" <%= typeof formData !== 'undefined' && formData.kompetensi === 'Pendukung' ? 'selected' : '' %>>Pendukung</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="sks" class="form-label">SKS</label>
+            <input
+              type="number"
+              class="form-control"
+              id="sks"
+              name="sks"
+              min="1"
+              required
+              placeholder="e.g., 3"
+              value="<%= typeof formData !== 'undefined' ? formData.sks : '' %>"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="semester" class="form-label">Semester</label>
+            <select class="form-select" id="semester" name="semester" required>
+              <option value="" disabled <%= typeof formData === 'undefined' ? 'selected' : '' %>>Pilih Semester</option>
+              <option value="1" <%= typeof formData !== 'undefined' && formData.semester == 1 ? 'selected' : '' %>>1 (I)</option>
+              <option value="2" <%= typeof formData !== 'undefined' && formData.semester == 2 ? 'selected' : '' %>>2 (II)</option>
+              <option value="3" <%= typeof formData !== 'undefined' && formData.semester == 3 ? 'selected' : '' %>>3 (III)</option>
+              <option value="4" <%= typeof formData !== 'undefined' && formData.semester == 4 ? 'selected' : '' %>>4 (IV)</option>
+              <option value="5" <%= typeof formData !== 'undefined' && formData.semester == 5 ? 'selected' : '' %>>5 (V)</option>
+              <option value="6" <%= typeof formData !== 'undefined' && formData.semester == 6 ? 'selected' : '' %>>6 (VI)</option>
+              <option value="7" <%= typeof formData !== 'undefined' && formData.semester == 7 ? 'selected' : '' %>>7 (VII)</option>
+              <option value="8" <%= typeof formData !== 'undefined' && formData.semester == 8 ? 'selected' : '' %>>8 (VIII)</option>
+            </select>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/mk" class="btn btn-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('title') %> Add Mata Kuliah

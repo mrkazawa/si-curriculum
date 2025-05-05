@@ -45,6 +45,14 @@
         </li>
         <li class="nav-item">
           <a
+            class="nav-link <%= path === '/mk' || (path && path.startsWith('/mk/')) ? 'active' : '' %>"
+            href="/mk"
+          >
+            MK
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
             class="nav-link <%= path === '/cpl-pl-mapping' ? 'active' : '' %>"
             href="/cpl-pl-mapping"
           >
