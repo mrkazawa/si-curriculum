@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const connectDB = require("./config/database"); // Import database connection
 const setRoutes = require("./routes/index");
+const expressLayouts = require("express-ejs-layouts");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,10 @@ connectDB();
 // Set up EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+// Set up express-ejs-layouts
+app.use(expressLayouts);
+app.set("layout", "layouts/main");
 
 // Middleware
 app.use(express.json());

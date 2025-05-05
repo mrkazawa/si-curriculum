@@ -1,80 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Profil Lulusan</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="container mt-5">
-      <div class="row">
-        <div class="col-md-8 offset-md-2">
-          <div class="card">
-            <div class="card-header bg-warning text-dark">
-              <h3>Edit Profil Lulusan (PL)</h3>
-            </div>
-            <div class="card-body">
-              <% if (typeof error !== 'undefined') { %>
-              <div class="alert alert-danger"><%= error %></div>
-              <% } %>
-              <form
-                action="/profil-lulusan/update/<%= profile.id %>"
-                method="POST"
-              >
-                <div class="mb-3">
-                  <label for="kode_pl" class="form-label">Kode PL</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="kode_pl"
-                    name="kode_pl"
-                    required
-                    value="<%= profile.kode_pl %>"
-                  />
-                </div>
-
-                <div class="mb-3">
-                  <label for="deskripsi" class="form-label"
-                    >Deskripsi Profil Lulusan</label
-                  >
-                  <textarea
-                    class="form-control"
-                    id="deskripsi"
-                    name="deskripsi"
-                    rows="4"
-                    required
-                  >
-<%= profile.deskripsi %></textarea
-                  >
-                </div>
-
-                <div class="mb-3">
-                  <label for="referensi" class="form-label">Referensi</label>
-                  <textarea
-                    class="form-control"
-                    id="referensi"
-                    name="referensi"
-                    rows="3"
-                  >
-<%= profile.referensi %></textarea
-                  >
-                </div>
-
-                <div class="d-flex justify-content-between">
-                  <button type="submit" class="btn btn-warning">Update</button>
-                  <a href="/profil-lulusan" class="btn btn-secondary">Cancel</a>
-                </div>
-              </form>
-            </div>
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header bg-warning text-dark">
+        <h3>Edit Profil Lulusan (PL)</h3>
+      </div>
+      <div class="card-body">
+        <% if (typeof error !== 'undefined') { %>
+        <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="/profil-lulusan/update/<%= profile.id %>" method="POST">
+          <div class="mb-3">
+            <label for="kode_pl" class="form-label">Kode PL</label>
+            <input
+              type="text"
+              class="form-control"
+              id="kode_pl"
+              name="kode_pl"
+              required
+              value="<%= profile.kode_pl %>"
+            />
           </div>
-        </div>
+
+          <div class="mb-3">
+            <label for="deskripsi" class="form-label"
+              >Deskripsi Profil Lulusan</label
+            >
+            <textarea
+              class="form-control"
+              id="deskripsi"
+              name="deskripsi"
+              rows="4"
+              required
+            >
+<%= profile.deskripsi %></textarea
+            >
+          </div>
+
+          <div class="mb-3">
+            <label for="referensi" class="form-label">Referensi</label>
+            <textarea
+              class="form-control"
+              id="referensi"
+              name="referensi"
+              rows="3"
+            >
+<%= profile.referensi %></textarea
+            >
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-warning">Update</button>
+            <a href="/profil-lulusan" class="btn btn-secondary">Cancel</a>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+<%- contentFor('title') %> Edit Profil Lulusan

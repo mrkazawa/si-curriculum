@@ -1,82 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add Profil Lulusan</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="container mt-5">
-      <div class="row">
-        <div class="col-md-8 offset-md-2">
-          <div class="card">
-            <div class="card-header bg-primary text-white">
-              <h3>Add Profil Lulusan (PL)</h3>
-            </div>
-            <div class="card-body">
-              <% if (typeof error !== 'undefined') { %>
-              <div class="alert alert-danger"><%= error %></div>
-              <% } %>
-              <form action="/profil-lulusan" method="POST">
-                <div class="mb-3">
-                  <label for="kode_pl" class="form-label">Kode PL</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="kode_pl"
-                    name="kode_pl"
-                    required
-                    placeholder="e.g., PL01"
-                    value="<%= typeof formData !== 'undefined' ? formData.kode_pl : '' %>"
-                  />
-                </div>
-
-                <div class="mb-3">
-                  <label for="deskripsi" class="form-label"
-                    >Deskripsi Profil Lulusan</label
-                  >
-                  <textarea
-                    class="form-control"
-                    id="deskripsi"
-                    name="deskripsi"
-                    rows="4"
-                    required
-                    placeholder="Deskripsi kemampuan lulusan..."
-                  >
-<%= typeof formData !== 'undefined' ? formData.deskripsi : '' %></textarea
-                  >
-                </div>
-
-                <div class="mb-3">
-                  <label for="referensi" class="form-label">Referensi</label>
-                  <textarea
-                    class="form-control"
-                    id="referensi"
-                    name="referensi"
-                    rows="3"
-                    placeholder="e.g., - IS2020&#10;- Permendikbudristek No. 53/2023&#10;- SKKNI level 6 bidang TIK"
-                  >
-<%= typeof formData !== 'undefined' ? formData.referensi : '' %></textarea
-                  >
-                </div>
-
-                <div class="d-flex justify-content-between">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                  <a href="/profil-lulusan" class="btn btn-secondary"
-                    >View Table</a
-                  >
-                </div>
-              </form>
-            </div>
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>Add Profil Lulusan (PL)</h3>
+      </div>
+      <div class="card-body">
+        <% if (typeof error !== 'undefined') { %>
+        <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="/profil-lulusan" method="POST">
+          <div class="mb-3">
+            <label for="kode_pl" class="form-label">Kode PL</label>
+            <input
+              type="text"
+              class="form-control"
+              id="kode_pl"
+              name="kode_pl"
+              required
+              placeholder="e.g., PL01"
+              value="<%= typeof formData !== 'undefined' ? formData.kode_pl : '' %>"
+            />
           </div>
-        </div>
+
+          <div class="mb-3">
+            <label for="deskripsi" class="form-label"
+              >Deskripsi Profil Lulusan</label
+            >
+            <textarea
+              class="form-control"
+              id="deskripsi"
+              name="deskripsi"
+              rows="4"
+              required
+              placeholder="Deskripsi kemampuan lulusan..."
+            >
+<%= typeof formData !== 'undefined' ? formData.deskripsi : '' %></textarea
+            >
+          </div>
+
+          <div class="mb-3">
+            <label for="referensi" class="form-label">Referensi</label>
+            <textarea
+              class="form-control"
+              id="referensi"
+              name="referensi"
+              rows="3"
+              placeholder="e.g., - IS2020&#10;- Permendikbudristek No. 53/2023&#10;- SKKNI level 6 bidang TIK"
+            >
+<%= typeof formData !== 'undefined' ? formData.referensi : '' %></textarea
+            >
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/profil-lulusan" class="btn btn-secondary">View Table</a>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+<%- contentFor('title') %> Add Profil Lulusan
