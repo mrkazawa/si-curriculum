@@ -2,6 +2,7 @@ const plRoutes = require("./plRoutes");
 const cplRoutes = require("./cplRoutes");
 const cplPlMappingRoutes = require("./cplPlMappingRoutes");
 const bkRoutes = require("./bkRoutes");
+const bkCplMappingRoutes = require("./bkCplMappingRoutes");
 
 const setRoutes = (app) => {
   // Middleware to make path available to all views
@@ -29,6 +30,9 @@ const setRoutes = (app) => {
 
   // Use the BK routes
   app.use("/bk", bkRoutes);
+
+  // Use the BK-CPL mapping routes
+  app.use("/bk-cpl-mapping", bkCplMappingRoutes);
 };
 
 module.exports = setRoutes;

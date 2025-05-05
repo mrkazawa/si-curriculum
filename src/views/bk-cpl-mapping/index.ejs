@@ -1,0 +1,104 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Mapping BK-CPL</h2>
+    <p class="text-muted">
+      Pemetaan antara Bahan Kajian dan Capaian Pembelajaran Lulusan
+    </p>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th rowspan="2" class="align-middle">BK</th>
+        <th
+          colspan="<%= cpls.length %>"
+          class="text-center"
+        >
+          Capaian Pembelajaran Lulusan (CPL)
+        </th>
+      </tr>
+      <tr>
+        <% if (cpls && cpls.length > 0) { %> <% cpls.forEach(cpl => { %>
+        <th class="text-center"><%= cpl.kode_cpl %></th>
+        <% }) %> <% } %>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (bks && bks.length > 0) { %> <% bks.forEach((bk, index) => { %>
+      <tr>
+        <td><%= bk.kode_bk %></td>
+        <% cpls.forEach(cpl => { %>
+        <td class="text-center">
+          <% const isChecked = bkMappings[bk.kode_bk] &&
+          bkMappings[bk.kode_bk].includes(cpl.kode_cpl); %> <input
+          type="checkbox" class="mapping-checkbox form-check-input" data-bk="<%=
+          bk.kode_bk %>" data-cpl="<%= cpl.kode_cpl %>" <%= isChecked ?
+          'checked' : '' %> />
+        </td>
+        <% }) %>
+      </tr>
+      <% }) %> <% } else { %>
+      <tr>
+        <td colspan="<%= 1 + cpls.length %>" class="text-center">
+          No BKs available
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(".mapping-checkbox");
+
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", function () {
+        const kodeBk = this.dataset.bk;
+        const kodeCpl = this.dataset.cpl;
+        const isChecked = this.checked;
+
+        // Show loading indicator or disable checkbox during update
+        this.disabled = true;
+
+        fetch("/bk-cpl-mapping/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            kode_bk: kodeBk,
+            kode_cpl: kodeCpl,
+            isChecked: isChecked.toString(),
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Success indication (optional)
+              console.log(
+                `Mapping ${isChecked ? "created" : "removed"} successfully`
+              );
+            } else {
+              // Revert the checkbox state if the operation failed
+              this.checked = !isChecked;
+              console.error("Failed to update mapping");
+            }
+          })
+          .catch((error) => {
+            // Revert the checkbox state on error
+            this.checked = !isChecked;
+            console.error("Error:", error);
+          })
+          .finally(() => {
+            // Re-enable the checkbox
+            this.disabled = false;
+          });
+      });
+    });
+  });
+</script>
+
+<%- contentFor('title') %> BK-CPL Mapping
