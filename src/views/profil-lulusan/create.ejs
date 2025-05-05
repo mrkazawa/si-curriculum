@@ -18,6 +18,9 @@
               <h3>Add Profil Lulusan (PL)</h3>
             </div>
             <div class="card-body">
+              <% if (typeof error !== 'undefined') { %>
+              <div class="alert alert-danger"><%= error %></div>
+              <% } %>
               <form action="/profil-lulusan" method="POST">
                 <div class="mb-3">
                   <label for="kode_pl" class="form-label">Kode PL</label>
@@ -28,6 +31,7 @@
                     name="kode_pl"
                     required
                     placeholder="e.g., PL01"
+                    value="<%= typeof formData !== 'undefined' ? formData.kode_pl : '' %>"
                   />
                 </div>
 
@@ -42,7 +46,9 @@
                     rows="4"
                     required
                     placeholder="Deskripsi kemampuan lulusan..."
-                  ></textarea>
+                  >
+<%= typeof formData !== 'undefined' ? formData.deskripsi : '' %></textarea
+                  >
                 </div>
 
                 <div class="mb-3">
@@ -53,7 +59,9 @@
                     name="referensi"
                     rows="3"
                     placeholder="e.g., - IS2020&#10;- Permendikbudristek No. 53/2023&#10;- SKKNI level 6 bidang TIK"
-                  ></textarea>
+                  >
+<%= typeof formData !== 'undefined' ? formData.referensi : '' %></textarea
+                  >
                 </div>
 
                 <div class="d-flex justify-content-between">

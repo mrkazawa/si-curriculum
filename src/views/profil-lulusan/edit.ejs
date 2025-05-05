@@ -18,6 +18,9 @@
               <h3>Edit Profil Lulusan (PL)</h3>
             </div>
             <div class="card-body">
+              <% if (typeof error !== 'undefined') { %>
+              <div class="alert alert-danger"><%= error %></div>
+              <% } %>
               <form
                 action="/profil-lulusan/update/<%= profile.id %>"
                 method="POST"

@@ -1,5 +1,13 @@
 const ProfilLulusan = require("../models/profilLulusanModel");
 
+// Helper function to render form with error
+const renderFormWithError = (res, view, errorMessage, formData = {}) => {
+  res.render(view, {
+    error: errorMessage,
+    formData: formData,
+  });
+};
+
 // Render the form for adding a new profile
 exports.renderForm = (req, res) => {
   res.render("profil-lulusan/create");
@@ -20,9 +28,18 @@ exports.renderTable = (req, res) => {
 exports.createProfil = (req, res) => {
   const { kode_pl, deskripsi, referensi } = req.body;
 
-  ProfilLulusan.create({ kode_pl, deskripsi, referensi }, (err) => {
+  ProfilLulusan.create({ kode_pl, deskripsi, referensi }, (err, result) => {
     if (err) {
       console.error("Error creating profile:", err);
+      // Check if it's a duplicate entry error
+      if (err.code === "ER_DUP_ENTRY") {
+        return renderFormWithError(
+          res,
+          "profil-lulusan/create",
+          "Kode PL already exists. Please use a unique code.",
+          { kode_pl, deskripsi, referensi }
+        );
+      }
       return res.status(500).send("Error creating profile");
     }
     res.redirect("/profil-lulusan");
@@ -68,6 +85,15 @@ exports.updateProfile = (req, res) => {
   ProfilLulusan.update(id, { kode_pl, deskripsi, referensi }, (err) => {
     if (err) {
       console.error("Error updating profile:", err);
+      // Check if it's a duplicate entry error
+      if (err.code === "ER_DUP_ENTRY") {
+        return renderFormWithError(
+          res,
+          "profil-lulusan/edit",
+          "Kode PL already exists. Please use a unique code.",
+          { id, kode_pl, deskripsi, referensi }
+        );
+      }
       return res.status(500).send("Error updating profile");
     }
     res.redirect("/profil-lulusan");

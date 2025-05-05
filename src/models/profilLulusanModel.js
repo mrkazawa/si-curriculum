@@ -6,7 +6,7 @@ const connection = connectDB();
 const createTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS profil_lulusan (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    kode_pl VARCHAR(10) NOT NULL,
+    kode_pl VARCHAR(10) NOT NULL UNIQUE,
     deskripsi TEXT NOT NULL,
     referensi TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
