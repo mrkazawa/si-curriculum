@@ -21,7 +21,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="nav-link <%= path && path.startsWith('/pl') ? 'active' : '' %>"
+            class="nav-link <%= path === '/pl' || (path && path.startsWith('/pl/')) ? 'active' : '' %>"
             href="/pl"
           >
             PL
@@ -29,7 +29,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="nav-link <%= path && path.startsWith('/cpl') ? 'active' : '' %>"
+            class="nav-link <%= path === '/cpl' || (path && path.startsWith('/cpl/')) ? 'active' : '' %>"
             href="/cpl"
           >
             CPL
@@ -37,7 +37,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="nav-link <%= path && path.startsWith('/bk') ? 'active' : '' %>"
+            class="nav-link <%= path === '/bk' || (path && path.startsWith('/bk/')) ? 'active' : '' %>"
             href="/bk"
           >
             BK
@@ -45,7 +45,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="nav-link <%= path && path.startsWith('/cpl-pl-mapping') ? 'active' : '' %>"
+            class="nav-link <%= path === '/cpl-pl-mapping' ? 'active' : '' %>"
             href="/cpl-pl-mapping"
           >
             CPL-PL Mapping
@@ -53,7 +53,7 @@
         </li>
         <li class="nav-item">
           <a
-            class="nav-link <%= path && path.startsWith('/bk-cpl-mapping') ? 'active' : '' %>"
+            class="nav-link <%= path === '/bk-cpl-mapping' ? 'active' : '' %>"
             href="/bk-cpl-mapping"
           >
             BK-CPL Mapping
