@@ -1,4 +1,4 @@
-const profilLulusanRoutes = require("./profilLulusanRoutes");
+const plRoutes = require("./plRoutes");
 const cplRoutes = require("./cplRoutes");
 
 const setRoutes = (app) => {
@@ -16,8 +16,8 @@ const setRoutes = (app) => {
     });
   });
 
-  // Use the Profil Lulusan routes
-  app.use("/profil-lulusan", profilLulusanRoutes);
+  // Use the PL routes
+  app.use("/pl", plRoutes);
 
   // Use the CPL routes
   app.use("/cpl", cplRoutes);

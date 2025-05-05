@@ -3,6 +3,7 @@ const connectDB = require("../config/database");
 const connection = connectDB();
 
 // Create profil_lulusan table if it doesn't exist
+// Note: We're keeping the DB table name the same to avoid migration issues
 const createTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS profil_lulusan (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,15 +27,15 @@ const createTable = () => {
 createTable();
 
 // Model functions for CRUD operations
-const ProfilLulusan = {
+const PlModel = {
   getAll: (callback) => {
     connection.query("SELECT * FROM profil_lulusan ORDER BY kode_pl", callback);
   },
 
-  create: (profilData, callback) => {
+  create: (plData, callback) => {
     connection.query(
       "INSERT INTO profil_lulusan (kode_pl, deskripsi, referensi) VALUES (?, ?, ?)",
-      [profilData.kode_pl, profilData.deskripsi, profilData.referensi],
+      [plData.kode_pl, plData.deskripsi, plData.referensi],
       callback
     );
   },
@@ -47,10 +48,10 @@ const ProfilLulusan = {
     );
   },
 
-  update: (id, profilData, callback) => {
+  update: (id, plData, callback) => {
     connection.query(
       "UPDATE profil_lulusan SET kode_pl = ?, deskripsi = ?, referensi = ? WHERE id = ?",
-      [profilData.kode_pl, profilData.deskripsi, profilData.referensi, id],
+      [plData.kode_pl, plData.deskripsi, plData.referensi, id],
       callback
     );
   },
@@ -60,4 +61,4 @@ const ProfilLulusan = {
   },
 };
 
-module.exports = ProfilLulusan;
+module.exports = PlModel;

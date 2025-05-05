@@ -8,7 +8,7 @@
         <% if (typeof error !== 'undefined') { %>
         <div class="alert alert-danger"><%= error %></div>
         <% } %>
-        <form action="/profil-lulusan/update/<%= profile.id %>" method="POST">
+        <form action="/pl/update/<%= profile.id %>" method="POST">
           <div class="mb-3">
             <label for="kode_pl" class="form-label">Kode PL</label>
             <input
@@ -50,7 +50,7 @@
 
           <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-warning">Update</button>
-            <a href="/profil-lulusan" class="btn btn-secondary">Cancel</a>
+            <a href="/pl" class="btn btn-secondary">Cancel</a>
           </div>
         </form>
       </div>
