@@ -26,7 +26,7 @@ const createTable = () => {
 createTable();
 
 // Model functions for CRUD operations
-const CapaianPembelajaran = {
+const CplModel = {
   getAll: (callback) => {
     connection.query(
       "SELECT * FROM capaian_pembelajaran_lulusan ORDER BY kode_cpl",
@@ -67,4 +67,4 @@ const CapaianPembelajaran = {
   },
 };
 
-module.exports = CapaianPembelajaran;
+module.exports = CplModel;

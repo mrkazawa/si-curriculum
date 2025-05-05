@@ -8,7 +8,7 @@
         <% if (typeof error !== 'undefined') { %>
         <div class="alert alert-danger"><%= error %></div>
         <% } %>
-        <form action="/capaian-pembelajaran" method="POST">
+        <form action="/cpl" method="POST">
           <div class="mb-3">
             <label for="kode_cpl" class="form-label">Kode CPL</label>
             <input
@@ -23,9 +23,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="deskripsi" class="form-label"
-              >Deskripsi Capaian Pembelajaran</label
-            >
+            <label for="deskripsi" class="form-label">Deskripsi CPL</label>
             <textarea
               class="form-control"
               id="deskripsi"
@@ -53,9 +51,7 @@
 
           <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-primary">Submit</button>
-            <a href="/capaian-pembelajaran" class="btn btn-secondary"
-              >View Table</a
-            >
+            <a href="/cpl" class="btn btn-secondary">Cancel</a>
           </div>
         </form>
       </div>
@@ -63,4 +59,4 @@
   </div>
 </div>
 
-<%- contentFor('title') %> Add Capaian Pembelajaran Lulusan
+<%- contentFor('title') %> Add CPL
