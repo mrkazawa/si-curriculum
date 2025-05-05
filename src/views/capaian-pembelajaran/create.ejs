@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>Add Capaian Pembelajaran Lulusan (CPL)</h3>
+      </div>
+      <div class="card-body">
+        <% if (typeof error !== 'undefined') { %>
+        <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="/capaian-pembelajaran" method="POST">
+          <div class="mb-3">
+            <label for="kode_cpl" class="form-label">Kode CPL</label>
+            <input
+              type="text"
+              class="form-control"
+              id="kode_cpl"
+              name="kode_cpl"
+              required
+              placeholder="e.g., CPL01"
+              value="<%= typeof formData !== 'undefined' ? formData.kode_cpl : '' %>"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="deskripsi" class="form-label"
+              >Deskripsi Capaian Pembelajaran</label
+            >
+            <textarea
+              class="form-control"
+              id="deskripsi"
+              name="deskripsi"
+              rows="4"
+              required
+              placeholder="Deskripsi capaian pembelajaran lulusan..."
+            >
+<%= typeof formData !== 'undefined' ? formData.deskripsi : '' %></textarea
+            >
+          </div>
+
+          <div class="mb-3">
+            <label for="referensi" class="form-label">Referensi</label>
+            <textarea
+              class="form-control"
+              id="referensi"
+              name="referensi"
+              rows="3"
+              placeholder="e.g., - IS2020&#10;- SKKNI Area Fungsi&#10;- IABEE, ABET"
+            >
+<%= typeof formData !== 'undefined' ? formData.referensi : '' %></textarea
+            >
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/capaian-pembelajaran" class="btn btn-secondary"
+              >View Table</a
+            >
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('title') %> Add Capaian Pembelajaran Lulusan

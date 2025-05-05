@@ -1,4 +1,5 @@
 const profilLulusanRoutes = require("./profilLulusanRoutes");
+const capaianPembelajaranRoutes = require("./capaianPembelajaranRoutes");
 
 const setRoutes = (app) => {
   // Middleware to make path available to all views
@@ -17,6 +18,9 @@ const setRoutes = (app) => {
 
   // Use the Profil Lulusan routes
   app.use("/profil-lulusan", profilLulusanRoutes);
+
+  // Use the Capaian Pembelajaran Lulusan routes
+  app.use("/capaian-pembelajaran", capaianPembelajaranRoutes);
 };
 
 module.exports = setRoutes;
