@@ -1,4 +1,4 @@
-const profilController = require("../controllers/profilController");
+const profilLulusanRoutes = require("./profilLulusanRoutes");
 
 const setRoutes = (app) => {
   // Home route
@@ -9,15 +9,8 @@ const setRoutes = (app) => {
     });
   });
 
-  // Profil Lulusan routes
-  app.get("/profil-lulusan/form", profilController.renderForm);
-  app.get("/profil-lulusan/table", profilController.renderTable);
-  app.post("/profil-lulusan", profilController.createProfil);
-  app.get("/profil-lulusan/delete/:id", profilController.deleteProfile);
-
-  // New edit routes
-  app.get("/profil-lulusan/edit/:id", profilController.renderEditForm);
-  app.post("/profil-lulusan/update/:id", profilController.updateProfile);
+  // Use the Profil Lulusan routes
+  app.use("/profil-lulusan", profilLulusanRoutes);
 };
 
 module.exports = setRoutes;

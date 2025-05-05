@@ -8,7 +8,7 @@ const createTable = () => {
     id INT AUTO_INCREMENT PRIMARY KEY,
     kode_pl VARCHAR(10) NOT NULL,
     deskripsi TEXT NOT NULL,
-    referensi TEXT NOT NULL,
+    referensi TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   )`;
