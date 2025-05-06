@@ -1,0 +1,47 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Mapping CPL-Semester-MK</h2>
+    <p class="text-muted">
+      Pemetaan antara Capaian Pembelajaran Lulusan, Semester, dan Mata Kuliah
+    </p>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th rowspan="2" class="align-middle text-center">CPL</th>
+        <th colspan="<%= semesters.length %>" class="text-center">Semester</th>
+      </tr>
+      <tr>
+        <% if (semesters && semesters.length > 0) { %> <%
+        semesters.forEach(semester => { %>
+        <th class="text-center"><%= semester %></th>
+        <% }) %> <% } %>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (cpls && cpls.length > 0) { %> <% cpls.forEach((cpl) => { %>
+      <tr>
+        <td class="fw-bold"><%= cpl.kode_cpl %></td>
+        <% semesters.forEach(semester => { %>
+        <td class="text-center">
+          <% const mks = mappingLookup[cpl.kode_cpl] &&
+          mappingLookup[cpl.kode_cpl][semester] ?
+          mappingLookup[cpl.kode_cpl][semester] : ''; %> <%= mks %>
+        </td>
+        <% }) %>
+      </tr>
+      <% }) %> <% } else { %>
+      <tr>
+        <td colspan="<%= 1 + semesters.length %>" class="text-center">
+          No CPLs available
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- contentFor('title') %> CPL-Semester-MK Mapping
