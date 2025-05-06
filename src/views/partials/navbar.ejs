@@ -63,53 +63,39 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item">
+        <li class="nav-item dropdown">
           <a
-            class="nav-link <%= path === '/cpl-pl-mapping' ? 'active' : '' %>"
-            href="/cpl-pl-mapping"
+            class="nav-link dropdown-toggle <%= path === '/cpl-pl-mapping' || path === '/bk-cpl-mapping' || path === '/mk-bk-mapping' || path === '/mk-cpl-mapping' || path === '/bk-cpl-mk-mapping' || path === '/cpl-semester-mk-mapping' ? 'active' : '' %>"
+            href="#"
+            id="mappingDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
           >
-            CPL-PL Mapping
+            Mapping
           </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link <%= path === '/bk-cpl-mapping' ? 'active' : '' %>"
-            href="/bk-cpl-mapping"
-          >
-            BK-CPL Mapping
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link <%= path === '/mk-bk-mapping' ? 'active' : '' %>"
-            href="/mk-bk-mapping"
-          >
-            MK-BK Mapping
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link <%= path === '/mk-cpl-mapping' ? 'active' : '' %>"
-            href="/mk-cpl-mapping"
-          >
-            MK-CPL Mapping
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link <%= path === '/bk-cpl-mk-mapping' ? 'active' : '' %>"
-            href="/bk-cpl-mk-mapping"
-          >
-            BK-CPL-MK Mapping
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link <%= path === '/cpl-semester-mk-mapping' ? 'active' : '' %>"
-            href="/cpl-semester-mk-mapping"
-          >
-            CPL-Semester-MK Mapping
-          </a>
+          <ul class="dropdown-menu" aria-labelledby="mappingDropdown">
+            <li>
+              <a class="dropdown-item" href="/cpl-pl-mapping"> CPL-PL </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/bk-cpl-mapping"> BK-CPL </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/mk-bk-mapping"> MK-BK </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/mk-cpl-mapping"> MK-CPL </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/bk-cpl-mk-mapping"> BK-CPL-MK </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/cpl-semester-mk-mapping">
+                CPL-Semester-MK
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>
