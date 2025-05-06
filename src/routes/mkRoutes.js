@@ -15,4 +15,7 @@ router.post("/update/:id", mkController.updateMK);
 // API route for prerequisites
 router.get("/prerequisites/:semester", mkController.getPrerequisites);
 
+// Visualization route
+router.get("/visualization", mkController.renderVisualization);
+
 module.exports = router;

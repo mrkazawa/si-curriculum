@@ -1,0 +1,74 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Visualisasi Distribusi Mata Kuliah</h2>
+  </div>
+  <div class="col text-end">
+    <a href="/mk" class="btn btn-primary">Kembali ke Daftar MK</a>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="table-dark">
+      <tr class="text-center">
+        <th style="width: 60px">Smt</th>
+        <th style="width: 60px">SKS</th>
+        <th style="width: 60px">Jml MK</th>
+        <th colspan="<%= maxMkWajib %>">MK Wajib</th>
+        <th colspan="<%= maxMkPilihan %>">MK-Pil</th>
+        <th colspan="<%= maxMkwk %>">MKWK</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (let i = 8; i >= 1; i--) { %>
+      <tr>
+        <td class="text-center"><strong><%= romanNumerals[i] %></strong></td>
+        <td class="text-center"><%= semesterData[i].totalSKS %></td>
+        <td class="text-center">
+          <%= semesterData[i].mkWajib.length + semesterData[i].mkPilihan.length
+          + semesterData[i].mkwk.length %>
+        </td>
+
+        <% semesterData[i].mkWajib.forEach(mk => { %>
+        <td><%= mk.kode_mk %></td>
+        <% }); %> <% for (let j = semesterData[i].mkWajib.length; j <
+        maxMkWajib; j++) { %>
+        <td></td>
+        <% } %> <% semesterData[i].mkPilihan.forEach(mk => { %>
+        <td><%= mk.kode_mk %></td>
+        <% }); %> <% for (let j = semesterData[i].mkPilihan.length; j <
+        maxMkPilihan; j++) { %>
+        <td></td>
+        <% } %> <% semesterData[i].mkwk.forEach(mk => { %>
+        <td><%= mk.kode_mk %></td>
+        <% }); %> <% for (let j = semesterData[i].mkwk.length; j < maxMkwk; j++)
+        { %>
+        <td></td>
+        <% } %>
+      </tr>
+      <% } %>
+      <tr class="table-light">
+        <td></td>
+        <td class="text-center">
+          <strong><%= totalSystemSKS %></strong>
+        </td>
+        <td colspan="<%= 1 + maxMkWajib + maxMkPilihan + maxMkwk %>"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Legend Section -->
+<div class="mt-4">
+  <h5>Keterangan:</h5>
+  <ul>
+    <li><strong>Smt</strong>: Semester</li>
+    <li><strong>SKS</strong>: Total SKS per semester</li>
+    <li><strong>Jml MK</strong>: Jumlah Mata Kuliah per semester</li>
+    <li><strong>MK Wajib</strong>: Mata Kuliah Wajib</li>
+    <li><strong>MK-Pil</strong>: Mata Kuliah Pilihan</li>
+    <li><strong>MKWK</strong>: Mata Kuliah Wajib Kurikulum</li>
+  </ul>
+</div>
+
+<%- contentFor('title') %> Visualisasi Mata Kuliah

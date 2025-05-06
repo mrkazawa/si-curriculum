@@ -300,3 +300,77 @@ exports.updateMK = (req, res) => {
     }
   );
 };
+
+// Render the visualization page
+exports.renderVisualization = (req, res) => {
+  MkModel.getAll((err, results) => {
+    if (err) {
+      console.error("Error fetching MK records:", err);
+      return res.status(500).send("Error fetching MK records");
+    }
+
+    // Group MKs by semester
+    const semesterData = {};
+    let totalSystemSKS = 0;
+
+    // Initialize semester data structure
+    for (let i = 1; i <= 8; i++) {
+      semesterData[i] = {
+        totalSKS: 0,
+        mkWajib: [],
+        mkPilihan: [],
+        mkwk: [],
+      };
+    }
+
+    // Organize MKs by semester and type
+    results.forEach((mk) => {
+      const semester = mk.semester;
+
+      // Add to appropriate category
+      if (mk.jenis_mk === "MK Wajib") {
+        semesterData[semester].mkWajib.push(mk);
+      } else if (mk.jenis_mk === "MK Pilihan") {
+        semesterData[semester].mkPilihan.push(mk);
+      } else if (mk.jenis_mk === "MKWK") {
+        semesterData[semester].mkwk.push(mk);
+      }
+
+      // Add SKS to semester total
+      semesterData[semester].totalSKS += mk.sks;
+      totalSystemSKS += mk.sks;
+    });
+
+    // Calculate max number of MKs in any category for table layout
+    let maxMkWajib = 0;
+    let maxMkPilihan = 0;
+    let maxMkwk = 0;
+
+    Object.values(semesterData).forEach((semData) => {
+      maxMkWajib = Math.max(maxMkWajib, semData.mkWajib.length);
+      maxMkPilihan = Math.max(maxMkPilihan, semData.mkPilihan.length);
+      maxMkwk = Math.max(maxMkwk, semData.mkwk.length);
+    });
+
+    // Convert semester numbers to Roman numerals for display
+    const romanNumerals = {
+      1: "I",
+      2: "II",
+      3: "III",
+      4: "IV",
+      5: "V",
+      6: "VI",
+      7: "VII",
+      8: "VIII",
+    };
+
+    res.render("mk/visualization", {
+      semesterData: semesterData,
+      romanNumerals: romanNumerals,
+      totalSystemSKS: totalSystemSKS,
+      maxMkWajib: maxMkWajib,
+      maxMkPilihan: maxMkPilihan,
+      maxMkwk: maxMkwk,
+    });
+  });
+};

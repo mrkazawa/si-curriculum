@@ -43,13 +43,25 @@
             BK
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item dropdown">
           <a
-            class="nav-link <%= path === '/mk' || (path && path.startsWith('/mk/')) ? 'active' : '' %>"
-            href="/mk"
+            class="nav-link dropdown-toggle <%= path === '/mk' || (path && path.startsWith('/mk/')) ? 'active' : '' %>"
+            href="#"
+            id="mkDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
           >
             MK
           </a>
+          <ul class="dropdown-menu" aria-labelledby="mkDropdown">
+            <li><a class="dropdown-item" href="/mk">Daftar MK</a></li>
+            <li>
+              <a class="dropdown-item" href="/mk/visualization"
+                >Visualisasi MK</a
+              >
+            </li>
+          </ul>
         </li>
         <li class="nav-item">
           <a
