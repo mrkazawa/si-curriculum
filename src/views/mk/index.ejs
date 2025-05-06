@@ -14,8 +14,10 @@
       <th>Kode MK</th>
       <th>Nama Mata Kuliah</th>
       <th>Kompetensi</th>
+      <th>Jenis MK</th>
       <th>SKS</th>
       <th>Semester</th>
+      <th>Prasyarat</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -33,8 +35,20 @@
         <span class="badge bg-secondary"><%= mk.kompetensi %></span>
         <% } %>
       </td>
+      <td>
+        <% if (mk.jenis_mk === 'MK Wajib') { %>
+        <span class="badge bg-success"><%= mk.jenis_mk %></span>
+        <% } else if (mk.jenis_mk === 'MK Pilihan') { %>
+        <span class="badge bg-info text-dark"><%= mk.jenis_mk %></span>
+        <% } else if (mk.jenis_mk === 'MKWK') { %>
+        <span class="badge bg-warning text-dark"><%= mk.jenis_mk %></span>
+        <% } else { %>
+        <span class="badge bg-secondary">-</span>
+        <% } %>
+      </td>
       <td><%= mk.sks %></td>
       <td class="text-center"><%= mk.semester_roman %></td>
+      <td><%= mk.prasyarat || '-' %></td>
       <td>
         <a href="/mk/edit/<%= mk.id %>" class="btn btn-sm btn-warning me-2"
           >Edit</a
@@ -49,7 +63,7 @@
     </tr>
     <% }) %> <% } else { %>
     <tr>
-      <td colspan="7" class="text-center">No Mata Kuliah available</td>
+      <td colspan="9" class="text-center">No Mata Kuliah available</td>
     </tr>
     <% } %>
   </tbody>

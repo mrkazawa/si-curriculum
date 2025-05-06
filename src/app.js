@@ -10,6 +10,9 @@ const PORT = process.env.PORT || 3000;
 // Initialize database connection
 connectDB();
 
+// Run migrations to ensure all tables are up-to-date
+require("./migrations/alterMkTable");
+
 // Set up EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));

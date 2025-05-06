@@ -25,7 +25,40 @@ const renderFormWithError = (res, view, errorMessage, formData = {}) => {
 
 // Render the form for adding a new MK
 exports.renderForm = (req, res) => {
-  res.render("mk/create");
+  // Default semester value for new MK
+  const semesterDefault = 1;
+
+  // Get prerequisite options (semester < default semester)
+  MkModel.getAllBySemesterBelow(semesterDefault, (err, prerequisites) => {
+    if (err) {
+      console.error("Error fetching prerequisites:", err);
+      return res.status(500).send("Error fetching prerequisites");
+    }
+
+    res.render("mk/create", {
+      prerequisites: prerequisites,
+      selectedPrereq: [],
+      selectedSemester: semesterDefault,
+    });
+  });
+};
+
+// Handle semester change for prerequisites
+exports.getPrerequisites = (req, res) => {
+  const semester = parseInt(req.params.semester);
+
+  if (isNaN(semester) || semester < 1 || semester > 8) {
+    return res.status(400).json({ error: "Invalid semester" });
+  }
+
+  MkModel.getAllBySemesterBelow(semester, (err, prerequisites) => {
+    if (err) {
+      console.error("Error fetching prerequisites:", err);
+      return res.status(500).json({ error: "Error fetching prerequisites" });
+    }
+
+    res.json({ prerequisites });
+  });
 };
 
 // Render the table with all Mata Kuliah
@@ -48,17 +81,32 @@ exports.renderTable = (req, res) => {
 
 // Create a new Mata Kuliah
 exports.createMK = (req, res) => {
-  const { kode_mk, nama_mk, kompetensi, sks, semester } = req.body;
+  const { kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester } = req.body;
+
+  // Handle multiple prerequisites
+  let prasyarat = null;
+  if (Array.isArray(req.body.prasyarat) && req.body.prasyarat.length > 0) {
+    prasyarat = req.body.prasyarat.join(",");
+  } else if (req.body.prasyarat && req.body.prasyarat.trim() !== "") {
+    prasyarat = req.body.prasyarat;
+  }
 
   // Validate input
-  if (!kode_mk || !nama_mk || !kompetensi || !sks || !semester) {
-    return renderFormWithError(res, "mk/create", "All fields are required", {
-      kode_mk,
-      nama_mk,
-      kompetensi,
-      sks,
-      semester,
-    });
+  if (!kode_mk || !nama_mk || !kompetensi || !jenis_mk || !sks || !semester) {
+    return renderFormWithError(
+      res,
+      "mk/create",
+      "All fields except prerequisites are required",
+      {
+        kode_mk,
+        nama_mk,
+        kompetensi,
+        jenis_mk,
+        sks,
+        semester,
+        prasyarat,
+      }
+    );
   }
 
   // Validate semester is between 1 and 8
@@ -68,7 +116,7 @@ exports.createMK = (req, res) => {
       res,
       "mk/create",
       "Semester must be a number between 1 and 8",
-      { kode_mk, nama_mk, kompetensi, sks, semester }
+      { kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
     );
   }
 
@@ -79,7 +127,7 @@ exports.createMK = (req, res) => {
       res,
       "mk/create",
       "SKS must be a positive number",
-      { kode_mk, nama_mk, kompetensi, sks, semester }
+      { kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
     );
   }
 
@@ -88,8 +136,10 @@ exports.createMK = (req, res) => {
       kode_mk,
       nama_mk,
       kompetensi,
+      jenis_mk,
       sks: sksNum,
       semester: semesterNum,
+      prasyarat,
     },
     (err, result) => {
       if (err) {
@@ -100,10 +150,10 @@ exports.createMK = (req, res) => {
             res,
             "mk/create",
             "Kode MK already exists. Please use a unique code.",
-            { kode_mk, nama_mk, kompetensi, sks, semester }
+            { kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
           );
         }
-        return res.status(500).send("Error creating MK");
+        return res.status(500).send("Error creating MK: " + err.message);
       }
       res.redirect("/mk");
     }
@@ -137,25 +187,57 @@ exports.renderEditForm = (req, res) => {
       return res.status(404).send("MK not found");
     }
 
-    res.render("mk/edit", { mk: results[0] });
+    const mk = results[0];
+    const selectedSemester = mk.semester;
+    const selectedPrereq = mk.prasyarat ? mk.prasyarat.split(",") : [];
+
+    // Get prerequisite options
+    MkModel.getAllBySemesterBelow(selectedSemester, (err, prerequisites) => {
+      if (err) {
+        console.error("Error fetching prerequisites:", err);
+        return res.status(500).send("Error fetching prerequisites");
+      }
+
+      res.render("mk/edit", {
+        mk: mk,
+        prerequisites: prerequisites,
+        selectedPrereq: selectedPrereq,
+        selectedSemester: selectedSemester,
+      });
+    });
   });
 };
 
 // Update a Mata Kuliah
 exports.updateMK = (req, res) => {
   const id = req.params.id;
-  const { kode_mk, nama_mk, kompetensi, sks, semester } = req.body;
+  const { kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester } = req.body;
+
+  // Handle multiple prerequisites
+  let prasyarat = null;
+  if (Array.isArray(req.body.prasyarat) && req.body.prasyarat.length > 0) {
+    prasyarat = req.body.prasyarat.join(",");
+  } else if (req.body.prasyarat && req.body.prasyarat.trim() !== "") {
+    prasyarat = req.body.prasyarat;
+  }
 
   // Validate input
-  if (!kode_mk || !nama_mk || !kompetensi || !sks || !semester) {
-    return renderFormWithError(res, "mk/edit", "All fields are required", {
-      id,
-      kode_mk,
-      nama_mk,
-      kompetensi,
-      sks,
-      semester,
-    });
+  if (!kode_mk || !nama_mk || !kompetensi || !jenis_mk || !sks || !semester) {
+    return renderFormWithError(
+      res,
+      "mk/edit",
+      "All fields except prerequisites are required",
+      {
+        id,
+        kode_mk,
+        nama_mk,
+        kompetensi,
+        jenis_mk,
+        sks,
+        semester,
+        prasyarat,
+      }
+    );
   }
 
   // Validate semester is between 1 and 8
@@ -165,7 +247,7 @@ exports.updateMK = (req, res) => {
       res,
       "mk/edit",
       "Semester must be a number between 1 and 8",
-      { id, kode_mk, nama_mk, kompetensi, sks, semester }
+      { id, kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
     );
   }
 
@@ -176,7 +258,7 @@ exports.updateMK = (req, res) => {
       res,
       "mk/edit",
       "SKS must be a positive number",
-      { id, kode_mk, nama_mk, kompetensi, sks, semester }
+      { id, kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
     );
   }
 
@@ -186,8 +268,10 @@ exports.updateMK = (req, res) => {
       kode_mk,
       nama_mk,
       kompetensi,
+      jenis_mk,
       sks: sksNum,
       semester: semesterNum,
+      prasyarat,
     },
     (err) => {
       if (err) {
@@ -198,10 +282,19 @@ exports.updateMK = (req, res) => {
             res,
             "mk/edit",
             "Kode MK already exists. Please use a unique code.",
-            { id, kode_mk, nama_mk, kompetensi, sks, semester }
+            {
+              id,
+              kode_mk,
+              nama_mk,
+              kompetensi,
+              jenis_mk,
+              sks,
+              semester,
+              prasyarat,
+            }
           );
         }
-        return res.status(500).send("Error updating MK");
+        return res.status(500).send("Error updating MK: " + err.message);
       }
       res.redirect("/mk");
     }

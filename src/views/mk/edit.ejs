@@ -40,6 +40,15 @@
               <option value="Pendukung" <%= mk.kompetensi === 'Pendukung' ? 'selected' : '' %>>Pendukung</option>
             </select>
           </div>
+          
+          <div class="mb-3">
+            <label for="jenis_mk" class="form-label">Jenis MK</label>
+            <select class="form-select" id="jenis_mk" name="jenis_mk" required>
+              <option value="MK Wajib" <%= mk.jenis_mk === 'MK Wajib' ? 'selected' : '' %>>MK Wajib</option>
+              <option value="MK Pilihan" <%= mk.jenis_mk === 'MK Pilihan' ? 'selected' : '' %>>MK Pilihan</option>
+              <option value="MKWK" <%= mk.jenis_mk === 'MKWK' ? 'selected' : '' %>>MKWK</option>
+            </select>
+          </div>
 
           <div class="mb-3">
             <label for="sks" class="form-label">SKS</label>
@@ -68,6 +77,25 @@
             </select>
           </div>
 
+          <div class="mb-3">
+            <label for="prasyarat" class="form-label">Kelas Prasyarat</label>
+            <select class="form-select" id="prasyarat" name="prasyarat">
+              <option value="" <%= (!mk.prasyarat || mk.prasyarat === '') ? 'selected' : '' %>>None (No Prerequisite)</option>
+              <option value="" disabled>Pilih Mata Kuliah Prasyarat (Opsional)</option>
+              <% if (prerequisites && prerequisites.length > 0) { %>
+                <% prerequisites.forEach(prereq => { %>
+                  <option value="<%= prereq.kode_mk %>" 
+                    <%= (mk.prasyarat && mk.prasyarat === prereq.kode_mk) ? 'selected' : '' %>>
+                    <%= prereq.kode_mk %> - <%= prereq.nama_mk %>
+                  </option>
+                <% }); %>
+              <% } else { %>
+                <option value="" disabled>Tidak ada MK prasyarat yang tersedia</option>
+              <% } %>
+            </select>
+            <div class="form-text text-muted">Pilih satu mata kuliah sebagai prasyarat atau None jika tidak ada</div>
+          </div>
+
           <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-warning">Update</button>
             <a href="/mk" class="btn btn-secondary">Cancel</a>
@@ -77,5 +105,67 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const semesterSelect = document.getElementById('semester');
+    const prasyaratSelect = document.getElementById('prasyarat');
+    
+    // Store initially selected prerequisite
+    const initialSelectedPrereq = prasyaratSelect.value;
+    
+    semesterSelect.addEventListener('change', function() {
+      const semester = this.value;
+      
+      // Fetch prerequisites for the selected semester
+      fetch(`/mk/prerequisites/${semester}`)
+        .then(response => response.json())
+        .then(data => {
+          // Clear current options
+          prasyaratSelect.innerHTML = '';
+          
+          // Add default "None" option
+          const noneOption = document.createElement('option');
+          noneOption.value = '';
+          noneOption.textContent = 'None (No Prerequisite)';
+          prasyaratSelect.appendChild(noneOption);
+          
+          // Add default option
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.disabled = true;
+          defaultOption.textContent = 'Pilih Mata Kuliah Prasyarat (Opsional)';
+          prasyaratSelect.appendChild(defaultOption);
+          
+          // If no prerequisites available
+          if (!data.prerequisites || data.prerequisites.length === 0) {
+            const noOption = document.createElement('option');
+            noOption.value = '';
+            noOption.disabled = true;
+            noOption.textContent = 'Tidak ada MK prasyarat yang tersedia';
+            prasyaratSelect.appendChild(noOption);
+            return;
+          }
+          
+          // Add prerequisites as options and restore selection if possible
+          data.prerequisites.forEach(prereq => {
+            const option = document.createElement('option');
+            option.value = prereq.kode_mk;
+            option.textContent = `${prereq.kode_mk} - ${prereq.nama_mk}`;
+            
+            // Restore selection if this was previously selected
+            if (initialSelectedPrereq === prereq.kode_mk) {
+              option.selected = true;
+            }
+            
+            prasyaratSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching prerequisites:', error);
+        });
+    });
+  });
+</script>
 
 <%- contentFor('title') %> Edit Mata Kuliah

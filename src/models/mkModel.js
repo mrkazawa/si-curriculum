@@ -9,8 +9,10 @@ const createTable = () => {
     kode_mk VARCHAR(10) NOT NULL UNIQUE,
     nama_mk VARCHAR(255) NOT NULL,
     kompetensi ENUM('Utama', 'Pendukung') NOT NULL,
+    jenis_mk ENUM('MK Wajib', 'MK Pilihan', 'MKWK') NOT NULL,
     sks INT NOT NULL,
     semester INT NOT NULL,
+    prasyarat VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   )`;
@@ -33,15 +35,25 @@ const MkModel = {
     connection.query("SELECT * FROM mata_kuliah ORDER BY kode_mk", callback);
   },
 
+  getAllBySemesterBelow: (semester, callback) => {
+    connection.query(
+      "SELECT kode_mk, nama_mk FROM mata_kuliah WHERE semester < ? ORDER BY semester, kode_mk",
+      [semester],
+      callback
+    );
+  },
+
   create: (mkData, callback) => {
     connection.query(
-      "INSERT INTO mata_kuliah (kode_mk, nama_mk, kompetensi, sks, semester) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO mata_kuliah (kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [
         mkData.kode_mk,
         mkData.nama_mk,
         mkData.kompetensi,
+        mkData.jenis_mk,
         mkData.sks,
         mkData.semester,
+        mkData.prasyarat || null,
       ],
       callback
     );
@@ -53,13 +65,15 @@ const MkModel = {
 
   update: (id, mkData, callback) => {
     connection.query(
-      "UPDATE mata_kuliah SET kode_mk = ?, nama_mk = ?, kompetensi = ?, sks = ?, semester = ? WHERE id = ?",
+      "UPDATE mata_kuliah SET kode_mk = ?, nama_mk = ?, kompetensi = ?, jenis_mk = ?, sks = ?, semester = ?, prasyarat = ? WHERE id = ?",
       [
         mkData.kode_mk,
         mkData.nama_mk,
         mkData.kompetensi,
+        mkData.jenis_mk,
         mkData.sks,
         mkData.semester,
+        mkData.prasyarat || null,
         id,
       ],
       callback

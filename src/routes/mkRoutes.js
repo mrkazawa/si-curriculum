@@ -12,4 +12,7 @@ router.get("/delete/:id", mkController.deleteMK);
 router.get("/edit/:id", mkController.renderEditForm);
 router.post("/update/:id", mkController.updateMK);
 
+// API route for prerequisites
+router.get("/prerequisites/:semester", mkController.getPrerequisites);
+
 module.exports = router;

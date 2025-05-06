@@ -43,6 +43,16 @@
               <option value="Pendukung" <%= typeof formData !== 'undefined' && formData.kompetensi === 'Pendukung' ? 'selected' : '' %>>Pendukung</option>
             </select>
           </div>
+          
+          <div class="mb-3">
+            <label for="jenis_mk" class="form-label">Jenis MK</label>
+            <select class="form-select" id="jenis_mk" name="jenis_mk" required>
+              <option value="" disabled <%= typeof formData === 'undefined' ? 'selected' : '' %>>Pilih Jenis MK</option>
+              <option value="MK Wajib" <%= typeof formData !== 'undefined' && formData.jenis_mk === 'MK Wajib' ? 'selected' : '' %>>MK Wajib</option>
+              <option value="MK Pilihan" <%= typeof formData !== 'undefined' && formData.jenis_mk === 'MK Pilihan' ? 'selected' : '' %>>MK Pilihan</option>
+              <option value="MKWK" <%= typeof formData !== 'undefined' && formData.jenis_mk === 'MKWK' ? 'selected' : '' %>>MKWK</option>
+            </select>
+          </div>
 
           <div class="mb-3">
             <label for="sks" class="form-label">SKS</label>
@@ -61,16 +71,35 @@
           <div class="mb-3">
             <label for="semester" class="form-label">Semester</label>
             <select class="form-select" id="semester" name="semester" required>
-              <option value="" disabled <%= typeof formData === 'undefined' ? 'selected' : '' %>>Pilih Semester</option>
-              <option value="1" <%= typeof formData !== 'undefined' && formData.semester == 1 ? 'selected' : '' %>>1 (I)</option>
-              <option value="2" <%= typeof formData !== 'undefined' && formData.semester == 2 ? 'selected' : '' %>>2 (II)</option>
-              <option value="3" <%= typeof formData !== 'undefined' && formData.semester == 3 ? 'selected' : '' %>>3 (III)</option>
-              <option value="4" <%= typeof formData !== 'undefined' && formData.semester == 4 ? 'selected' : '' %>>4 (IV)</option>
-              <option value="5" <%= typeof formData !== 'undefined' && formData.semester == 5 ? 'selected' : '' %>>5 (V)</option>
-              <option value="6" <%= typeof formData !== 'undefined' && formData.semester == 6 ? 'selected' : '' %>>6 (VI)</option>
-              <option value="7" <%= typeof formData !== 'undefined' && formData.semester == 7 ? 'selected' : '' %>>7 (VII)</option>
-              <option value="8" <%= typeof formData !== 'undefined' && formData.semester == 8 ? 'selected' : '' %>>8 (VIII)</option>
+              <option value="" disabled <%= typeof formData === 'undefined' && typeof selectedSemester === 'undefined' ? 'selected' : '' %>>Pilih Semester</option>
+              <option value="1" <%= (typeof formData !== 'undefined' && formData.semester == 1) || selectedSemester == 1 ? 'selected' : '' %>>1 (I)</option>
+              <option value="2" <%= (typeof formData !== 'undefined' && formData.semester == 2) || selectedSemester == 2 ? 'selected' : '' %>>2 (II)</option>
+              <option value="3" <%= (typeof formData !== 'undefined' && formData.semester == 3) || selectedSemester == 3 ? 'selected' : '' %>>3 (III)</option>
+              <option value="4" <%= (typeof formData !== 'undefined' && formData.semester == 4) || selectedSemester == 4 ? 'selected' : '' %>>4 (IV)</option>
+              <option value="5" <%= (typeof formData !== 'undefined' && formData.semester == 5) || selectedSemester == 5 ? 'selected' : '' %>>5 (V)</option>
+              <option value="6" <%= (typeof formData !== 'undefined' && formData.semester == 6) || selectedSemester == 6 ? 'selected' : '' %>>6 (VI)</option>
+              <option value="7" <%= (typeof formData !== 'undefined' && formData.semester == 7) || selectedSemester == 7 ? 'selected' : '' %>>7 (VII)</option>
+              <option value="8" <%= (typeof formData !== 'undefined' && formData.semester == 8) || selectedSemester == 8 ? 'selected' : '' %>>8 (VIII)</option>
             </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="prasyarat" class="form-label">Kelas Prasyarat</label>
+            <select class="form-select" id="prasyarat" name="prasyarat">
+              <option value="">None (No Prerequisite)</option>
+              <option value="" disabled>Pilih Mata Kuliah Prasyarat (Opsional)</option>
+              <% if (prerequisites && prerequisites.length > 0) { %>
+                <% prerequisites.forEach(prereq => { %>
+                  <option value="<%= prereq.kode_mk %>" 
+                    <%= (typeof selectedPrereq !== 'undefined' && selectedPrereq === prereq.kode_mk) ? 'selected' : '' %>>
+                    <%= prereq.kode_mk %> - <%= prereq.nama_mk %>
+                  </option>
+                <% }); %>
+              <% } else { %>
+                <option value="" disabled>Tidak ada MK prasyarat yang tersedia</option>
+              <% } %>
+            </select>
+            <div class="form-text text-muted">Pilih satu mata kuliah sebagai prasyarat atau None jika tidak ada</div>
           </div>
 
           <div class="d-flex justify-content-between">
@@ -82,5 +111,58 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const semesterSelect = document.getElementById('semester');
+    const prasyaratSelect = document.getElementById('prasyarat');
+    
+    semesterSelect.addEventListener('change', function() {
+      const semester = this.value;
+      
+      // Fetch prerequisites for the selected semester
+      fetch(`/mk/prerequisites/${semester}`)
+        .then(response => response.json())
+        .then(data => {
+          // Clear current options
+          prasyaratSelect.innerHTML = '';
+          
+          // Add default "None" option
+          const noneOption = document.createElement('option');
+          noneOption.value = '';
+          noneOption.textContent = 'None (No Prerequisite)';
+          prasyaratSelect.appendChild(noneOption);
+          
+          // Add default option
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.disabled = true;
+          defaultOption.textContent = 'Pilih Mata Kuliah Prasyarat (Opsional)';
+          prasyaratSelect.appendChild(defaultOption);
+          
+          // If no prerequisites available
+          if (!data.prerequisites || data.prerequisites.length === 0) {
+            const noOption = document.createElement('option');
+            noOption.value = '';
+            noOption.disabled = true;
+            noOption.textContent = 'Tidak ada MK prasyarat yang tersedia';
+            prasyaratSelect.appendChild(noOption);
+            return;
+          }
+          
+          // Add prerequisites as options
+          data.prerequisites.forEach(prereq => {
+            const option = document.createElement('option');
+            option.value = prereq.kode_mk;
+            option.textContent = `${prereq.kode_mk} - ${prereq.nama_mk}`;
+            prasyaratSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching prerequisites:', error);
+        });
+    });
+  });
+</script>
 
 <%- contentFor('title') %> Add Mata Kuliah
