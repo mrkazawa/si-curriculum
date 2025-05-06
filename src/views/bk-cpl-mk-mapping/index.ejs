@@ -1,0 +1,49 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Mapping BK-CPL-MK</h2>
+    <p class="text-muted">
+      Pemetaan antara Bahan Kajian, Capaian Pembelajaran Lulusan, dan Mata
+      Kuliah
+    </p>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th rowspan="2" class="align-middle text-center">BK</th>
+        <th colspan="<%= cpls.length %>" class="text-center">
+          Capaian Pembelajaran Lulusan (CPL)
+        </th>
+      </tr>
+      <tr>
+        <% if (cpls && cpls.length > 0) { %> <% cpls.forEach(cpl => { %>
+        <th class="text-center"><%= cpl.kode_cpl %></th>
+        <% }) %> <% } %>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (bks && bks.length > 0) { %> <% bks.forEach((bk) => { %>
+      <tr>
+        <td class="fw-bold"><%= bk.kode_bk %></td>
+        <% cpls.forEach(cpl => { %>
+        <td class="text-center">
+          <% const mks = mappingLookup[bk.kode_bk] &&
+          mappingLookup[bk.kode_bk][cpl.kode_cpl] ?
+          mappingLookup[bk.kode_bk][cpl.kode_cpl] : ''; %> <%= mks %>
+        </td>
+        <% }) %>
+      </tr>
+      <% }) %> <% } else { %>
+      <tr>
+        <td colspan="<%= 1 + cpls.length %>" class="text-center">
+          No BKs available
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- contentFor('title') %> BK-CPL-MK Mapping
