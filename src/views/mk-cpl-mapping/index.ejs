@@ -1,0 +1,103 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Mapping MK-CPL</h2>
+    <p class="text-muted">
+      Pemetaan antara Mata Kuliah dan Capaian Pembelajaran Lulusan
+    </p>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th rowspan="2" class="align-middle">No</th>
+        <th rowspan="2" class="align-middle">Kode MK</th>
+        <th colspan="<%= cpls.length %>" class="text-center">
+          Capaian Pembelajaran Lulusan (CPL)
+        </th>
+      </tr>
+      <tr>
+        <% if (cpls && cpls.length > 0) { %> <% cpls.forEach(cpl => { %>
+        <th class="text-center"><%= cpl.kode_cpl %></th>
+        <% }) %> <% } %>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (mks && mks.length > 0) { %> <% mks.forEach((mk, index) => { %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= mk.kode_mk %></td>
+        <% cpls.forEach(cpl => { %>
+        <td class="text-center">
+          <% const isChecked = mkMappings[mk.kode_mk] &&
+          mkMappings[mk.kode_mk].includes(cpl.kode_cpl); %> <input
+          type="checkbox" class="mapping-checkbox form-check-input" data-mk="<%=
+          mk.kode_mk %>" data-cpl="<%= cpl.kode_cpl %>" <%= isChecked ?
+          'checked' : '' %> />
+        </td>
+        <% }) %>
+      </tr>
+      <% }) %> <% } else { %>
+      <tr>
+        <td colspan="<%= 2 + cpls.length %>" class="text-center">
+          No Mata Kuliah available
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(".mapping-checkbox");
+
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", function () {
+        const kodeMk = this.dataset.mk;
+        const kodeCpl = this.dataset.cpl;
+        const isChecked = this.checked;
+
+        // Show loading indicator or disable checkbox during update
+        this.disabled = true;
+
+        fetch("/mk-cpl-mapping/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            kode_mk: kodeMk,
+            kode_cpl: kodeCpl,
+            isChecked: isChecked.toString(),
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Success indication (optional)
+              console.log(
+                `Mapping ${isChecked ? "created" : "removed"} successfully`
+              );
+            } else {
+              // Revert the checkbox state if the operation failed
+              this.checked = !isChecked;
+              console.error("Failed to update mapping");
+            }
+          })
+          .catch((error) => {
+            // Revert the checkbox state on error
+            this.checked = !isChecked;
+            console.error("Error:", error);
+          })
+          .finally(() => {
+            // Re-enable the checkbox
+            this.disabled = false;
+          });
+      });
+    });
+  });
+</script>
+
+<%- contentFor('title') %> MK-CPL Mapping
