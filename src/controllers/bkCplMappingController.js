@@ -1,6 +1,6 @@
 const BkCplMappingModel = require("../models/bkCplMappingModel");
 const BkModel = require("../models/bkModel");
-const CplModel = require("../models/cplModel");
+const CplModel = require("../models/cpl-model");
 
 exports.renderMappingTable = (req, res) => {
   // Get all BKs

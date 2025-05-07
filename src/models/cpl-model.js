@@ -1,3 +1,4 @@
+// filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\models\cpl-model.js
 const connectDB = require("../config/database");
 
 const connection = connectDB();
@@ -26,7 +27,7 @@ const createTable = () => {
 createTable();
 
 // Model functions for CRUD operations
-const CplModel = {
+const DaftarCplModel = {
   getAll: (callback) => {
     connection.query(
       "SELECT * FROM capaian_pembelajaran_lulusan ORDER BY kode_cpl",
@@ -67,4 +68,4 @@ const CplModel = {
   },
 };
 
-module.exports = CplModel;
+module.exports = DaftarCplModel;

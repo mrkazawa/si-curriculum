@@ -1,5 +1,5 @@
 const CplPlMappingModel = require("../models/cplPlMappingModel");
-const CplModel = require("../models/cplModel");
+const CplModel = require("../models/cpl-model");
 const DaftarPlModel = require("../models/pl/daftar-pl-model");
 
 exports.renderMappingTable = (req, res) => {

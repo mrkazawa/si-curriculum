@@ -1,14 +1,14 @@
 <div class="row">
   <div class="col-md-8 offset-md-2">
     <div class="card">
-      <div class="card-header bg-warning text-dark">
-        <h3>Edit Capaian Pembelajaran Lulusan (CPL)</h3>
+      <div class="card-header bg-primary text-white">
+        <h3>Add Capaian Pembelajaran Lulusan (CPL)</h3>
       </div>
       <div class="card-body">
         <% if (typeof error !== 'undefined') { %>
         <div class="alert alert-danger"><%= error %></div>
         <% } %>
-        <form action="/cpl/update/<%= cpl.id %>" method="POST">
+        <form action="/cpl/daftar" method="POST">
           <div class="mb-3">
             <label for="kode_cpl" class="form-label">Kode CPL</label>
             <input
@@ -17,7 +17,8 @@
               id="kode_cpl"
               name="kode_cpl"
               required
-              value="<%= cpl.kode_cpl %>"
+              placeholder="e.g., CPL01"
+              value="<%= typeof formData !== 'undefined' ? formData.kode_cpl : '' %>"
             />
           </div>
 
@@ -29,8 +30,9 @@
               name="deskripsi"
               rows="4"
               required
+              placeholder="Deskripsi capaian pembelajaran lulusan..."
             >
-<%= cpl.deskripsi %></textarea
+<%= typeof formData !== 'undefined' ? formData.deskripsi : '' %></textarea
             >
           </div>
 
@@ -41,14 +43,15 @@
               id="referensi"
               name="referensi"
               rows="3"
+              placeholder="e.g., - IS2020&#10;- SKKNI Area Fungsi&#10;- IABEE, ABET"
             >
-<%= cpl.referensi %></textarea
+<%= typeof formData !== 'undefined' ? formData.referensi : '' %></textarea
             >
           </div>
 
           <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-warning">Update</button>
-            <a href="/cpl" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/cpl/daftar" class="btn btn-secondary">Cancel</a>
           </div>
         </form>
       </div>
@@ -56,4 +59,4 @@
   </div>
 </div>
 
-<%- contentFor('title') %> Edit CPL
+<%- contentFor('title') %> Add CPL

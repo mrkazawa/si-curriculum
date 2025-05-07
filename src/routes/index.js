@@ -1,5 +1,5 @@
-const cplRoutes = require("./cplRoutes");
 // Use new structured routes
+const daftarCplRoutes = require("./cpl/daftar-cpl-routes");
 const daftarCpmkRoutes = require("./cpmk/daftar-cpmk-routes");
 const daftarPlRoutes = require("./pl/daftar-pl-routes");
 const cplPlMappingRoutes = require("./cplPlMappingRoutes");
@@ -29,8 +29,8 @@ const setRoutes = (app) => {
   // Use the new PL routes with updated path structure
   app.use("/pl/daftar", daftarPlRoutes);
 
-  // Use the CPL routes
-  app.use("/cpl", cplRoutes);
+  // Use the new CPL routes with updated path structure
+  app.use("/cpl/daftar", daftarCplRoutes);
 
   // Use the CPMK routes with updated path structure
   app.use("/cpmk/daftar", daftarCpmkRoutes);

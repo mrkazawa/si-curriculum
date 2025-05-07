@@ -3,7 +3,7 @@
     <h2>Capaian Pembelajaran Lulusan (CPL)</h2>
   </div>
   <div class="col text-end">
-    <a href="/cpl/form" class="btn btn-primary">Add New CPL</a>
+    <a href="/cpl/daftar/form" class="btn btn-primary">Add New CPL</a>
   </div>
 </div>
 
@@ -25,11 +25,13 @@
       <td><%= cpl.deskripsi %></td>
       <td><%- cpl.referensi.replace(/\n/g, '<br />') %></td>
       <td>
-        <a href="/cpl/edit/<%= cpl.id %>" class="btn btn-sm btn-warning me-2"
+        <a
+          href="/cpl/daftar/edit/<%= cpl.id %>"
+          class="btn btn-sm btn-warning me-2"
           >Edit</a
         >
         <a
-          href="/cpl/delete/<%= cpl.id %>"
+          href="/cpl/daftar/delete/<%= cpl.id %>"
           class="btn btn-sm btn-danger"
           onclick="return confirm('Are you sure you want to delete this CPL?')"
           >Delete</a
@@ -43,3 +45,5 @@
     <% } %>
   </tbody>
 </table>
+
+<%- contentFor('title') %> CPL

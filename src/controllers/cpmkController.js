@@ -1,5 +1,5 @@
 const CpmkModel = require("../models/cpmkModel");
-const CplModel = require("../models/cplModel");
+const CplModel = require("../models/cpl-model");
 
 // Helper function to render form with error
 const renderFormWithError = (

@@ -1,5 +1,5 @@
 const CplSemesterMkModel = require("../models/cplSemesterMkModel");
-const CplModel = require("../models/cplModel");
+const CplModel = require("../models/cpl-model");
 
 exports.renderMappingTable = (req, res) => {
   // Get all CPLs
