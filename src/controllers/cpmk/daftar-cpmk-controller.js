@@ -1,5 +1,5 @@
 // filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\controllers\cpmk\daftar-cpmk-controller.js
-const DaftarCpmkModel = require("../../models/cpmk/daftar-cpmk-model");
+const CpmkModel = require("../../models/cpmk-model");
 const CplModel = require("../../models/cpl-model"); // Updated path to the CPL model
 
 // Helper function to render form with error
@@ -32,7 +32,7 @@ exports.renderForm = (req, res) => {
 
 // Render the table with all CPMKs
 exports.renderTable = (req, res) => {
-  DaftarCpmkModel.getAll((err, results) => {
+  CpmkModel.getAll((err, results) => {
     if (err) {
       console.error("Error fetching CPMKs:", err);
       return res.status(500).send("Error fetching CPMKs");
@@ -64,7 +64,7 @@ exports.createCPMK = (req, res) => {
     return;
   }
 
-  DaftarCpmkModel.create({ kode_cpmk, deskripsi, kode_cpl }, (err, result) => {
+  CpmkModel.create({ kode_cpmk, deskripsi, kode_cpl }, (err, result) => {
     if (err) {
       console.error("Error creating CPMK:", err);
 
@@ -105,7 +105,7 @@ exports.createCPMK = (req, res) => {
 exports.deleteCPMK = (req, res) => {
   const id = req.params.id;
 
-  DaftarCpmkModel.delete(id, (err) => {
+  CpmkModel.delete(id, (err) => {
     if (err) {
       console.error("Error deleting CPMK:", err);
       return res.status(500).send("Error deleting CPMK");
@@ -125,7 +125,7 @@ exports.renderEditForm = (req, res) => {
       return res.status(500).send("Error fetching CPLs");
     }
 
-    DaftarCpmkModel.getById(id, (err, results) => {
+    CpmkModel.getById(id, (err, results) => {
       if (err) {
         console.error("Error fetching CPMK for edit:", err);
         return res.status(500).send("Error fetching CPMK");
@@ -171,7 +171,7 @@ exports.updateCPMK = (req, res) => {
   // If CPL changed, create a new CPMK and delete the old one
   if (cplChanged) {
     // Create a new CPMK with the new CPL
-    DaftarCpmkModel.create(
+    CpmkModel.create(
       { kode_cpmk, deskripsi, kode_cpl },
       (createErr, createResult) => {
         if (createErr) {
@@ -196,7 +196,7 @@ exports.updateCPMK = (req, res) => {
         }
 
         // Delete the old CPMK
-        DaftarCpmkModel.delete(id, (deleteErr) => {
+        CpmkModel.delete(id, (deleteErr) => {
           if (deleteErr) {
             console.error("Error deleting old CPMK:", deleteErr);
             // Even if delete fails, still redirect as the new one was created
@@ -209,7 +209,7 @@ exports.updateCPMK = (req, res) => {
     );
   } else {
     // If CPL didn't change, just update the CPMK normally
-    DaftarCpmkModel.update(id, { kode_cpmk, deskripsi, kode_cpl }, (err) => {
+    CpmkModel.update(id, { kode_cpmk, deskripsi, kode_cpl }, (err) => {
       if (err) {
         console.error("Error updating CPMK:", err);
 
@@ -252,7 +252,7 @@ exports.getNextCpmkNumber = (req, res) => {
   const kode_cpl = req.params.kode_cpl;
 
   // Call the model method to get the count
-  DaftarCpmkModel.countByCpl(kode_cpl, (err, results) => {
+  CpmkModel.countByCpl(kode_cpl, (err, results) => {
     if (err) {
       console.error("Error counting CPMKs:", err);
       return res.status(500).json({ error: "Database error" });

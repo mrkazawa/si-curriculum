@@ -1,5 +1,5 @@
-// filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\models\cpmk\daftar-cpmk-model.js
-const connectDB = require("../../config/database");
+// filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\models\cpmk-model.js
+const connectDB = require("../config/database");
 
 const connection = connectDB();
 
@@ -27,7 +27,7 @@ const createTable = () => {
 createTable();
 
 // Model functions for CRUD operations
-const DaftarCpmkModel = {
+const CpmkModel = {
   getAll: (callback) => {
     // Join with CPL table to get CPL details
     connection.query(
@@ -81,4 +81,4 @@ const DaftarCpmkModel = {
   },
 };
 
-module.exports = DaftarCpmkModel;
+module.exports = CpmkModel;

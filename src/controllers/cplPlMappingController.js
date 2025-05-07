@@ -1,6 +1,6 @@
 const CplPlMappingModel = require("../models/cplPlMappingModel");
 const CplModel = require("../models/cpl-model");
-const DaftarPlModel = require("../models/pl/daftar-pl-model");
+const PlModel = require("../models/pl-model");
 
 exports.renderMappingTable = (req, res) => {
   // Get all CPLs
@@ -11,7 +11,7 @@ exports.renderMappingTable = (req, res) => {
     }
 
     // Get all PLs using the new model
-    DaftarPlModel.getAll((plErr, pls) => {
+    PlModel.getAll((plErr, pls) => {
       if (plErr) {
         console.error("Error fetching PLs:", plErr);
         return res.status(500).send("Error fetching PLs");

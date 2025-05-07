@@ -1,5 +1,5 @@
 // filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\controllers\pl\daftar-pl-controller.js
-const DaftarPlModel = require("../../models/pl/daftar-pl-model");
+const PlModel = require("../../models/pl-model");
 
 // Helper function to render form with error
 const renderFormWithError = (res, view, errorMessage, formData = {}) => {
@@ -16,7 +16,7 @@ exports.renderForm = (req, res) => {
 
 // Render the table with all profiles
 exports.renderTable = (req, res) => {
-  DaftarPlModel.getAll((err, results) => {
+  PlModel.getAll((err, results) => {
     if (err) {
       console.error("Error fetching PL records:", err);
       return res.status(500).send("Error fetching PL records");
@@ -29,7 +29,7 @@ exports.renderTable = (req, res) => {
 exports.createPL = (req, res) => {
   const { kode_pl, deskripsi, referensi } = req.body;
 
-  DaftarPlModel.create({ kode_pl, deskripsi, referensi }, (err, result) => {
+  PlModel.create({ kode_pl, deskripsi, referensi }, (err, result) => {
     if (err) {
       console.error("Error creating PL:", err);
       // Check if it's a duplicate entry error
@@ -51,7 +51,7 @@ exports.createPL = (req, res) => {
 exports.deletePL = (req, res) => {
   const id = req.params.id;
 
-  DaftarPlModel.delete(id, (err) => {
+  PlModel.delete(id, (err) => {
     if (err) {
       console.error("Error deleting PL:", err);
       return res.status(500).send("Error deleting PL");
@@ -64,7 +64,7 @@ exports.deletePL = (req, res) => {
 exports.renderEditForm = (req, res) => {
   const id = req.params.id;
 
-  DaftarPlModel.getById(id, (err, results) => {
+  PlModel.getById(id, (err, results) => {
     if (err) {
       console.error("Error fetching PL for edit:", err);
       return res.status(500).send("Error fetching PL");
@@ -83,7 +83,7 @@ exports.updatePL = (req, res) => {
   const id = req.params.id;
   const { kode_pl, deskripsi, referensi } = req.body;
 
-  DaftarPlModel.update(id, { kode_pl, deskripsi, referensi }, (err) => {
+  PlModel.update(id, { kode_pl, deskripsi, referensi }, (err) => {
     if (err) {
       console.error("Error updating PL:", err);
       // Check if it's a duplicate entry error
@@ -103,7 +103,7 @@ exports.updatePL = (req, res) => {
 
 // Get next code for PL
 exports.getNextPlCode = (req, res) => {
-  DaftarPlModel.getAll((err, results) => {
+  PlModel.getAll((err, results) => {
     if (err) {
       console.error("Error fetching PLs:", err);
       return res.status(500).json({ error: "Database error" });

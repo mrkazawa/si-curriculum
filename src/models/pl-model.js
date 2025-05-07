@@ -1,5 +1,4 @@
-// filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\models\pl\daftar-pl-model.js
-const connectDB = require("../../config/database");
+const connectDB = require("../config/database");
 
 const connection = connectDB();
 
@@ -28,7 +27,7 @@ const createTable = () => {
 createTable();
 
 // Model functions for CRUD operations
-const DaftarPlModel = {
+const PlModel = {
   getAll: (callback) => {
     connection.query("SELECT * FROM profil_lulusan ORDER BY kode_pl", callback);
   },
@@ -62,4 +61,4 @@ const DaftarPlModel = {
   },
 };
 
-module.exports = DaftarPlModel;
+module.exports = PlModel;
