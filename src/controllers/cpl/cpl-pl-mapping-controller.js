@@ -1,6 +1,6 @@
-const CplPlMappingModel = require("../models/cplPlMappingModel");
-const CplModel = require("../models/cpl-model");
-const PlModel = require("../models/pl-model");
+const CplPlMappingModel = require("../../models/cpl-pl-mapping-model");
+const CplModel = require("../../models/cpl-model");
+const PlModel = require("../../models/pl-model");
 
 exports.renderMappingTable = (req, res) => {
   // Get all CPLs
@@ -33,7 +33,7 @@ exports.renderMappingTable = (req, res) => {
           cplMappings[mapping.kode_cpl] = mappedPLs;
         });
 
-        res.render("cpl-pl-mapping/index", {
+        res.render("cpl/cpl-pl-mapping/index", {
           cpls: cpls,
           pls: pls,
           cplMappings: cplMappings,
