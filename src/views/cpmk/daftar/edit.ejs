@@ -1,0 +1,136 @@
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header bg-warning text-dark">
+        <h3>Edit Capaian Pembelajaran Mata Kuliah (CPMK)</h3>
+      </div>
+      <div class="card-body">
+        <% if (typeof error !== 'undefined') { %>
+        <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="/cpmk/daftar/update/<%= cpmk.id %>" method="POST">
+          <!-- Store the original CPL code in a hidden field for comparison -->
+          <input type="hidden" id="original_cpl" name="original_cpl" value="<%= cpmk.kode_cpl %>">
+          <input type="hidden" id="original_cpmk" name="original_cpmk" value="<%= cpmk.kode_cpmk %>">
+          
+          <div class="mb-3">
+            <label for="kode_cpl" class="form-label">Capaian Pembelajaran Lulusan (CPL)</label>
+            <select class="form-select" id="kode_cpl" name="kode_cpl" required>
+              <% if (cpls && cpls.length > 0) { %>
+                <% cpls.forEach(cpl => { %>
+                  <option 
+                    value="<%= cpl.kode_cpl %>" 
+                    data-deskripsi="<%= cpl.deskripsi %>"
+                    <%= cpmk.kode_cpl === cpl.kode_cpl ? 'selected' : '' %>
+                  ><%= cpl.kode_cpl %></option>
+                <% }); %>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="deskripsi_cpl" class="form-label">Deskripsi CPL</label>
+            <textarea
+              class="form-control bg-light"
+              id="deskripsi_cpl"
+              rows="3"
+              readonly
+              tabindex="-1"
+              style="pointer-events: none;"
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="kode_cpmk" class="form-label">Kode CPMK</label>
+            <input
+              type="text"
+              class="form-control bg-light"
+              id="kode_cpmk"
+              name="kode_cpmk"
+              required
+              readonly
+              tabindex="-1" 
+              style="pointer-events: none;"
+              value="<%= cpmk.kode_cpmk %>"
+            />
+            <div id="cpmk_code_info" class="form-text text-warning d-none">
+              <i class="fas fa-info-circle"></i> CPL berubah: CPMK baru akan dibuat dan CPMK lama akan dihapus.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="deskripsi" class="form-label">Deskripsi CPMK</label>
+            <textarea
+              class="form-control"
+              id="deskripsi"
+              name="deskripsi"
+              rows="4"
+              required
+            ><%= cpmk.deskripsi %></textarea>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-warning">Update</button>
+            <a href="/cpmk/daftar" class="btn btn-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const cplSelect = document.getElementById('kode_cpl');
+    const deskripsiCplTextarea = document.getElementById('deskripsi_cpl');
+    const kodeCpmkInput = document.getElementById('kode_cpmk');
+    const originalCpl = document.getElementById('original_cpl').value;
+    const cpmkCodeInfo = document.getElementById('cpmk_code_info');
+    
+    // Function to update CPL description based on selected CPL
+    function updateCplDescription() {
+      const selectedOption = cplSelect.options[cplSelect.selectedIndex];
+      deskripsiCplTextarea.value = selectedOption.dataset.deskripsi || '';
+      
+      const selectedCpl = selectedOption.value;
+      // If the selected CPL is different from the original
+      if (selectedCpl !== originalCpl) {
+        // Set loading status
+        kodeCpmkInput.value = "Generating new code...";
+        cpmkCodeInfo.classList.remove('d-none');
+        
+        // Make an AJAX call to get the next CPMK number for this CPL
+        fetch(`/cpmk/daftar/next-number/${selectedCpl}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // Generate CPMK code based on selected CPL and actual next number from database
+            const cpmkCode = `CPMK${selectedCpl.substring(3)}${data.nextNumber}`;
+            kodeCpmkInput.value = cpmkCode;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            kodeCpmkInput.value = "Error generating code";
+            // Show an alert to the user
+            alert("Failed to generate CPMK code. Please try again or contact support.");
+          });
+      } else {
+        // Reset to original CPMK code if we switch back to original CPL
+        kodeCpmkInput.value = document.getElementById('original_cpmk').value;
+        cpmkCodeInfo.classList.add('d-none');
+      }
+    }
+    
+    // Set initial CPL description on page load
+    updateCplDescription();
+    
+    // Update CPL description when CPL selection changes
+    cplSelect.addEventListener('change', updateCplDescription);
+  });
+</script>
+
+<%- contentFor('title') %> Edit CPMK

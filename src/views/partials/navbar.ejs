@@ -37,6 +37,14 @@
         </li>
         <li class="nav-item">
           <a
+            class="nav-link <%= path === '/cpmk/daftar' || (path && path.startsWith('/cpmk/daftar/')) ? 'active' : '' %>"
+            href="/cpmk/daftar"
+          >
+            CPMK
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
             class="nav-link <%= path === '/bk' || (path && path.startsWith('/bk/')) ? 'active' : '' %>"
             href="/bk"
           >

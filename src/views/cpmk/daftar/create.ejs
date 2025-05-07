@@ -1,0 +1,122 @@
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>Add Capaian Pembelajaran Mata Kuliah (CPMK)</h3>
+      </div>
+      <div class="card-body">
+        <% if (typeof error !== 'undefined') { %>
+        <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="/cpmk/daftar" method="POST">
+          <div class="mb-3">
+            <label for="kode_cpl" class="form-label"
+              >Capaian Pembelajaran Lulusan (CPL)</label
+            >
+            <select class="form-select" id="kode_cpl" name="kode_cpl" required>
+              <option value="" selected disabled>Pilih CPL</option>
+              <% if (cpls && cpls.length > 0) { %> <% cpls.forEach(cpl => { %>
+              <option
+                value="<%= cpl.kode_cpl %>"
+                data-deskripsi="<%= cpl.deskripsi %>"
+              >
+                <%= cpl.kode_cpl %>
+              </option>
+              <% }); %> <% } %>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="deskripsi_cpl" class="form-label">Deskripsi CPL</label>
+            <textarea
+              class="form-control bg-light"
+              id="deskripsi_cpl"
+              rows="3"
+              readonly
+              tabindex="-1"
+              style="pointer-events: none"
+              placeholder="Deskripsi CPL akan tampil di sini setelah memilih CPL"
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="kode_cpmk" class="form-label">Kode CPMK</label>
+            <input
+              type="text"
+              class="form-control bg-light"
+              id="kode_cpmk"
+              name="kode_cpmk"
+              required
+              readonly
+              tabindex="-1"
+              style="pointer-events: none"
+              placeholder="Kode CPMK akan otomatis terisi"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="deskripsi" class="form-label">Deskripsi CPMK</label>
+            <textarea
+              class="form-control"
+              id="deskripsi"
+              name="deskripsi"
+              rows="4"
+              required
+              placeholder="Deskripsi capaian pembelajaran mata kuliah..."
+            >
+<%= typeof formData !== 'undefined' ? formData.deskripsi : '' %></textarea
+            >
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/cpmk/daftar" class="btn btn-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const cplSelect = document.getElementById("kode_cpl");
+    const deskripsiCplTextarea = document.getElementById("deskripsi_cpl");
+    const kodeCpmkInput = document.getElementById("kode_cpmk");
+
+    cplSelect.addEventListener("change", function () {
+      const selectedOption = cplSelect.options[cplSelect.selectedIndex];
+      const cplCode = selectedOption.value;
+
+      // Update the CPL description
+      deskripsiCplTextarea.value = selectedOption.dataset.deskripsi || "";
+
+      // Clear the CPMK code while we're fetching
+      kodeCpmkInput.value = "Loading...";
+
+      // Make an AJAX call to get the next CPMK number for this CPL
+      fetch(`/cpmk/daftar/next-number/${cplCode}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Generate CPMK code based on selected CPL and actual next number from database
+          const cpmkCode = `CPMK${cplCode.substring(3)}${data.nextNumber}`;
+          kodeCpmkInput.value = cpmkCode;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          kodeCpmkInput.value = "Error generating code";
+          // Show an alert to the user
+          alert(
+            "Failed to generate CPMK code. Please try again or contact support."
+          );
+        });
+    });
+  });
+</script>
+
+<%- contentFor('title') %> Add CPMK
