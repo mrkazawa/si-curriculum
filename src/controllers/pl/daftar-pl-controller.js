@@ -100,3 +100,29 @@ exports.updatePL = (req, res) => {
     res.redirect("/pl/daftar");
   });
 };
+
+// Get next code for PL
+exports.getNextPlCode = (req, res) => {
+  DaftarPlModel.getAll((err, results) => {
+    if (err) {
+      console.error("Error fetching PLs:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    // Extract the numeric parts of existing PL codes
+    const codeNumbers = results.map((pl) => {
+      const match = pl.kode_pl.match(/^PL(\d+)$/);
+      return match ? parseInt(match[1], 10) : 0;
+    });
+
+    // Find the maximum number
+    const maxNumber = codeNumbers.length > 0 ? Math.max(...codeNumbers) : 0;
+
+    // Create the next code (increment by 1)
+    const nextNumber = maxNumber + 1;
+    const nextCode = `PL${String(nextNumber).padStart(2, "0")}`;
+
+    // Return the next code as JSON
+    res.json({ nextCode: nextCode });
+  });
+};

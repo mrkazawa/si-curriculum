@@ -13,12 +13,14 @@
             <label for="kode_pl" class="form-label">Kode PL</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control bg-light"
               id="kode_pl"
               name="kode_pl"
               required
-              placeholder="e.g., PL01"
-              value="<%= typeof formData !== 'undefined' ? formData.kode_pl : '' %>"
+              readonly
+              tabindex="-1"
+              style="pointer-events: none"
+              value="Loading..."
             />
           </div>
 
@@ -60,5 +62,31 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const kodePlInput = document.getElementById("kode_pl");
+
+    // Make an AJAX call to get the next PL code
+    fetch("/pl/daftar/next-code")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        kodePlInput.value = data.nextCode;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        kodePlInput.value = "Error generating code";
+        // Show an alert to the user
+        alert(
+          "Failed to generate PL code. Please try again or contact support."
+        );
+      });
+  });
+</script>
 
 <%- contentFor('title') %> Add Profil Lulusan

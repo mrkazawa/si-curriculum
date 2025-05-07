@@ -13,10 +13,13 @@
             <label for="kode_pl" class="form-label">Kode PL</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control bg-light"
               id="kode_pl"
               name="kode_pl"
               required
+              readonly
+              tabindex="-1"
+              style="pointer-events: none"
               value="<%= profile.kode_pl %>"
             />
           </div>

@@ -3,6 +3,9 @@ const express = require("express");
 const router = express.Router();
 const daftarPlController = require("../../controllers/pl/daftar-pl-controller");
 
+// Get next code for PL
+router.get("/next-code", daftarPlController.getNextPlCode);
+
 // PL routes
 router.get("/form", daftarPlController.renderForm);
 router.get("/", daftarPlController.renderTable);
