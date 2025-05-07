@@ -14,6 +14,18 @@ exports.renderForm = (req, res) => {
   res.render("bk/daftar/create");
 };
 
+// Get next BK code for auto-generation
+exports.getNextCode = (req, res) => {
+  BkModel.getNextCode((err, nextCode) => {
+    if (err) {
+      console.error("Error getting next BK code:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    res.json({ nextCode: nextCode });
+  });
+};
+
 // Render the table with all BKs
 exports.renderTable = (req, res) => {
   BkModel.getAll((err, results) => {
@@ -28,6 +40,16 @@ exports.renderTable = (req, res) => {
 // Create a new BK
 exports.createBK = (req, res) => {
   const { kode_bk, bahan_kajian, deskripsi, kompetensi, referensi } = req.body;
+
+  // Validate input
+  if (!kode_bk || !bahan_kajian || !deskripsi || !kompetensi) {
+    return renderFormWithError(
+      res,
+      "bk/daftar/create",
+      "All fields except referensi are required",
+      { kode_bk, bahan_kajian, deskripsi, kompetensi, referensi }
+    );
+  }
 
   BkModel.create(
     { kode_bk, bahan_kajian, deskripsi, kompetensi, referensi },
@@ -86,24 +108,50 @@ exports.updateBK = (req, res) => {
   const id = req.params.id;
   const { kode_bk, bahan_kajian, deskripsi, kompetensi, referensi } = req.body;
 
-  BkModel.update(
-    id,
-    { kode_bk, bahan_kajian, deskripsi, kompetensi, referensi },
-    (err) => {
-      if (err) {
-        console.error("Error updating BK:", err);
-        // Check if it's a duplicate entry error
-        if (err.code === "ER_DUP_ENTRY") {
-          return renderFormWithError(
-            res,
-            "bk/daftar/edit",
-            "Kode BK already exists. Please use a unique code.",
-            { id, kode_bk, bahan_kajian, deskripsi, kompetensi, referensi }
-          );
-        }
-        return res.status(500).send("Error updating BK");
-      }
-      res.redirect("/bk/daftar");
+  // Validate input
+  if (!bahan_kajian || !deskripsi || !kompetensi) {
+    return renderFormWithError(
+      res,
+      "bk/daftar/edit",
+      "All fields except referensi are required",
+      { id, kode_bk, bahan_kajian, deskripsi, kompetensi, referensi }
+    );
+  }
+
+  // Get the original BK to preserve the kode_bk (since it should not be edited)
+  BkModel.getById(id, (getErr, results) => {
+    if (getErr || results.length === 0) {
+      console.error("Error fetching original BK:", getErr);
+      return res.status(500).send("Error fetching BK data");
     }
-  );
+
+    const originalKodeBk = results[0].kode_bk;
+
+    BkModel.update(
+      id,
+      {
+        kode_bk: originalKodeBk, // Use the original, not the submitted one
+        bahan_kajian,
+        deskripsi,
+        kompetensi,
+        referensi,
+      },
+      (err) => {
+        if (err) {
+          console.error("Error updating BK:", err);
+          // Check if it's a duplicate entry error
+          if (err.code === "ER_DUP_ENTRY") {
+            return renderFormWithError(
+              res,
+              "bk/daftar/edit",
+              "Kode BK already exists. Please use a unique code.",
+              { id, kode_bk, bahan_kajian, deskripsi, kompetensi, referensi }
+            );
+          }
+          return res.status(500).send("Error updating BK");
+        }
+        res.redirect("/bk/daftar");
+      }
+    );
+  });
 };

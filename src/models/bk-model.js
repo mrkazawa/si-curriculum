@@ -70,6 +70,32 @@ const BkModel = {
   delete: (id, callback) => {
     connection.query("DELETE FROM bahan_kajian WHERE id = ?", [id], callback);
   },
+
+  // Get the next BK code
+  getNextCode: (callback) => {
+    connection.query(
+      "SELECT kode_bk FROM bahan_kajian ORDER BY kode_bk DESC LIMIT 1",
+      (err, results) => {
+        if (err) {
+          return callback(err, null);
+        }
+
+        let nextCode = "BK01"; // Default if no BK exists yet
+
+        if (results.length > 0) {
+          // Extract the number from the last code (e.g., "BK04" -> "04")
+          const lastCode = results[0].kode_bk;
+          const lastNumber = parseInt(lastCode.substring(2));
+
+          // Generate the next number with leading zero if needed
+          const nextNumber = lastNumber + 1;
+          nextCode = `BK${String(nextNumber).padStart(2, "0")}`;
+        }
+
+        callback(null, nextCode);
+      }
+    );
+  },
 };
 
 module.exports = BkModel;

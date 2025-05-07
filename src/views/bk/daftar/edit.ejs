@@ -13,10 +13,12 @@
             <label for="kode_bk" class="form-label">Kode BK</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control bg-light"
               id="kode_bk"
               name="kode_bk"
-              required
+              readonly
+              tabindex="-1"
+              style="pointer-events: none;"
               value="<%= bk.kode_bk %>"
             />
           </div>

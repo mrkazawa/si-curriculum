@@ -13,11 +13,12 @@
             <label for="kode_bk" class="form-label">Kode BK</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control bg-light"
               id="kode_bk"
               name="kode_bk"
-              required
-              placeholder="e.g., BK01"
+              readonly
+              tabindex="-1"
+              style="pointer-events: none;"
               value="<%= typeof formData !== 'undefined' ? formData.kode_bk : '' %>"
             />
           </div>
@@ -77,5 +78,31 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const kodeBkInput = document.getElementById("kode_bk");
+
+    // Make an AJAX call to get the next BK code
+    fetch("/bk/daftar/next-code")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        kodeBkInput.value = data.nextCode;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        kodeBkInput.value = "Error generating code";
+        // Show an alert to the user
+        alert(
+          "Failed to generate BK code. Please try again or contact support."
+        );
+      });
+  });
+</script>
 
 <%- contentFor('title') %> Add Bahan Kajian

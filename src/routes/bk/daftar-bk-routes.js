@@ -3,6 +3,9 @@ const express = require("express");
 const router = express.Router();
 const daftarBkController = require("../../controllers/bk/daftar-bk-controller");
 
+// Get next BK code for auto-generation
+router.get("/next-code", daftarBkController.getNextCode);
+
 // BK routes
 router.get("/form", daftarBkController.renderForm);
 router.get("/", daftarBkController.renderTable);
