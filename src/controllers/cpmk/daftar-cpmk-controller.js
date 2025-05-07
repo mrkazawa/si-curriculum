@@ -1,4 +1,5 @@
-const DaftarCpmkModel = require("../../models/cpmk/DaftarCpmkModel");
+// filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\controllers\cpmk\daftar-cpmk-controller.js
+const DaftarCpmkModel = require("../../models/cpmk/daftar-cpmk-model");
 const CplModel = require("../../models/cplModel");
 
 // Helper function to render form with error

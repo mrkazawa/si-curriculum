@@ -1,7 +1,7 @@
 const plRoutes = require("./plRoutes");
 const cplRoutes = require("./cplRoutes");
 // Replace old CPMK routes with new import path
-const daftarCpmkRoutes = require("./cpmk/DaftarCpmkRoutes");
+const daftarCpmkRoutes = require("./cpmk/daftar-cpmk-routes");
 const cplPlMappingRoutes = require("./cplPlMappingRoutes");
 const bkRoutes = require("./bkRoutes");
 const bkCplMappingRoutes = require("./bkCplMappingRoutes");

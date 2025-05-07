@@ -1,6 +1,7 @@
+// filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\routes\cpmk\daftar-cpmk-routes.js
 const express = require("express");
 const router = express.Router();
-const daftarCpmkController = require("../../controllers/cpmk/DaftarCpmkController");
+const daftarCpmkController = require("../../controllers/cpmk/daftar-cpmk-controller");
 
 // Get next number for CPMK generation
 router.get("/next-number/:kode_cpl", daftarCpmkController.getNextCpmkNumber);
