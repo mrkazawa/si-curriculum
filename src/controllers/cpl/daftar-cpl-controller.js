@@ -100,3 +100,29 @@ exports.updateCPL = (req, res) => {
     res.redirect("/cpl/daftar");
   });
 };
+
+// Get next code for CPL
+exports.getNextCplCode = (req, res) => {
+  DaftarCplModel.getAll((err, results) => {
+    if (err) {
+      console.error("Error fetching CPLs:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    // Extract the numeric parts of existing CPL codes
+    const codeNumbers = results.map((cpl) => {
+      const match = cpl.kode_cpl.match(/^CPL(\d+)$/);
+      return match ? parseInt(match[1], 10) : 0;
+    });
+
+    // Find the maximum number
+    const maxNumber = codeNumbers.length > 0 ? Math.max(...codeNumbers) : 0;
+
+    // Create the next code (increment by 1)
+    const nextNumber = maxNumber + 1;
+    const nextCode = `CPL${String(nextNumber).padStart(2, "0")}`;
+
+    // Return the next code as JSON
+    res.json({ nextCode: nextCode });
+  });
+};

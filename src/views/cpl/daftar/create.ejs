@@ -13,12 +13,15 @@
             <label for="kode_cpl" class="form-label">Kode CPL</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control bg-light"
               id="kode_cpl"
               name="kode_cpl"
               required
-              placeholder="e.g., CPL01"
+              readonly
+              tabindex="-1"
+              style="pointer-events: none"
               value="<%= typeof formData !== 'undefined' ? formData.kode_cpl : '' %>"
+              placeholder="Loading..."
             />
           </div>
 
@@ -58,5 +61,31 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const kodeCplInput = document.getElementById("kode_cpl");
+
+    // Make an AJAX call to get the next CPL code
+    fetch("/cpl/daftar/next-code")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        kodeCplInput.value = data.nextCode;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        kodeCplInput.value = "Error generating code";
+        // Show an alert to the user
+        alert(
+          "Failed to generate CPL code. Please try again or contact support."
+        );
+      });
+  });
+</script>
 
 <%- contentFor('title') %> Add CPL

@@ -9,6 +9,9 @@ router.get("/", daftarCplController.renderTable);
 router.post("/", daftarCplController.createCPL);
 router.get("/delete/:id", daftarCplController.deleteCPL);
 
+// Get next code for CPL
+router.get("/next-code", daftarCplController.getNextCplCode);
+
 // Edit routes
 router.get("/edit/:id", daftarCplController.renderEditForm);
 router.post("/update/:id", daftarCplController.updateCPL);
