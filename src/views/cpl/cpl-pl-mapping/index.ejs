@@ -5,6 +5,11 @@
       Pemetaan antara Capaian Pembelajaran Lulusan dan Profil Lulusan
     </p>
   </div>
+  <div class="col-auto">
+    <button id="edit-toggle-btn" class="btn btn-warning">
+      <i class="fas fa-edit"></i> Edit
+    </button>
+  </div>
 </div>
 
 <div class="table-responsive">
@@ -40,10 +45,17 @@
         <% pls.forEach(pl => { %>
         <td class="text-center">
           <% const isChecked = cplMappings[cpl.kode_cpl] &&
-          cplMappings[cpl.kode_cpl].includes(pl.kode_pl); %> <input
-          type="checkbox" class="mapping-checkbox form-check-input"
-          data-cpl="<%= cpl.kode_cpl %>" data-pl="<%= pl.kode_pl %>" <%=
-          isChecked ? 'checked' : '' %> />
+          cplMappings[cpl.kode_cpl].includes(pl.kode_pl); %>
+          <div class="view-mode">
+            <% if (isChecked) { %>
+            <span class="text-success">✔</span>
+            <% } %>
+          </div>
+          <div class="edit-mode" style="display: none">
+            <input type="checkbox" class="mapping-checkbox form-check-input"
+            data-cpl="<%= cpl.kode_cpl %>" data-pl="<%= pl.kode_pl %>" <%=
+            isChecked ? 'checked' : '' %> />
+          </div>
         </td>
         <% }) %>
       </tr>
@@ -60,8 +72,46 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    const editToggleBtn = document.getElementById("edit-toggle-btn");
     const checkboxes = document.querySelectorAll(".mapping-checkbox");
+    let isEditMode = false;
 
+    // Initialize view mode elements to be visible by default
+    document.querySelectorAll(".view-mode").forEach((el) => {
+      el.style.display = "block";
+    });
+
+    document.querySelectorAll(".edit-mode").forEach((el) => {
+      el.style.display = "none";
+    });
+
+    // Function to toggle between view and edit mode
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+
+      // Toggle visibility of view/edit mode elements
+      document.querySelectorAll(".view-mode").forEach((el) => {
+        el.style.display = isEditMode ? "none" : "block";
+      });
+
+      document.querySelectorAll(".edit-mode").forEach((el) => {
+        el.style.display = isEditMode ? "block" : "none";
+      });
+
+      // Update button text
+      if (isEditMode) {
+        editToggleBtn.innerHTML = '<i class="fas fa-check"></i> Done';
+        editToggleBtn.classList.replace("btn-primary", "btn-success");
+      } else {
+        editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+        editToggleBtn.classList.replace("btn-success", "btn-primary");
+      }
+    }
+
+    // Add event listener for the edit toggle button
+    editToggleBtn.addEventListener("click", toggleEditMode);
+
+    // Checkbox change event handler - same as before
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("change", function () {
         const kodeCpl = this.dataset.cpl;
@@ -89,6 +139,14 @@
               console.log(
                 `Mapping ${isChecked ? "created" : "removed"} successfully`
               );
+
+              // Update the corresponding view mode checkmark
+              const viewCell = this.closest("td").querySelector(".view-mode");
+              if (isChecked) {
+                viewCell.innerHTML = '<span class="text-success">✓</span>';
+              } else {
+                viewCell.innerHTML = "";
+              }
             } else {
               // Revert the checkbox state if the operation failed
               this.checked = !isChecked;
