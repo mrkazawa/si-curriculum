@@ -1,3 +1,4 @@
+// filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\models\bk-model.js
 const connectDB = require("../config/database");
 
 const connection = connectDB();

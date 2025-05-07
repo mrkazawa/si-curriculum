@@ -3,7 +3,7 @@
     <h2>Bahan Kajian (BK)</h2>
   </div>
   <div class="col text-end">
-    <a href="/bk/form" class="btn btn-primary">Add New Bahan Kajian</a>
+    <a href="/bk/daftar/form" class="btn btn-primary">Add New Bahan Kajian</a>
   </div>
 </div>
 
@@ -38,11 +38,13 @@
       </td>
       <td><%- bk.referensi.replace(/\n/g, '<br />') %></td>
       <td>
-        <a href="/bk/edit/<%= bk.id %>" class="btn btn-sm btn-warning me-2"
+        <a
+          href="/bk/daftar/edit/<%= bk.id %>"
+          class="btn btn-sm btn-warning me-2"
           >Edit</a
         >
         <a
-          href="/bk/delete/<%= bk.id %>"
+          href="/bk/daftar/delete/<%= bk.id %>"
           class="btn btn-sm btn-danger"
           onclick="return confirm('Are you sure you want to delete this bahan kajian?')"
           >Delete</a

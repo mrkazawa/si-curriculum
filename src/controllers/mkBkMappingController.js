@@ -1,6 +1,6 @@
 const MkBkMappingModel = require("../models/mkBkMappingModel");
 const MkModel = require("../models/mkModel");
-const BkModel = require("../models/bkModel");
+const BkModel = require("../models/bk-model");
 
 exports.renderMappingTable = (req, res) => {
   // Get all MKs
