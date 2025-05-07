@@ -3,7 +3,7 @@
     <h2>Profil Lulusan (PL)</h2>
   </div>
   <div class="col text-end">
-    <a href="/pl/form" class="btn btn-primary">Add New Profile</a>
+    <a href="/pl/daftar/form" class="btn btn-primary">Add New Profile</a>
   </div>
 </div>
 
@@ -26,11 +26,13 @@
       <td><%= profile.deskripsi %></td>
       <td><%- profile.referensi.replace(/\n/g, '<br />') %></td>
       <td>
-        <a href="/pl/edit/<%= profile.id %>" class="btn btn-sm btn-warning me-2"
+        <a
+          href="/pl/daftar/edit/<%= profile.id %>"
+          class="btn btn-sm btn-warning me-2"
           >Edit</a
         >
         <a
-          href="/pl/delete/<%= profile.id %>"
+          href="/pl/daftar/delete/<%= profile.id %>"
           class="btn btn-sm btn-danger"
           onclick="return confirm('Are you sure you want to delete this profile?')"
           >Delete</a
@@ -44,3 +46,5 @@
     <% } %>
   </tbody>
 </table>
+
+<%- contentFor('title') %> Profil Lulusan

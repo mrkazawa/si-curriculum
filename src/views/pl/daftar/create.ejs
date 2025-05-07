@@ -1,14 +1,14 @@
 <div class="row">
   <div class="col-md-8 offset-md-2">
     <div class="card">
-      <div class="card-header bg-warning text-dark">
-        <h3>Edit Profil Lulusan (PL)</h3>
+      <div class="card-header bg-primary text-white">
+        <h3>Add Profil Lulusan (PL)</h3>
       </div>
       <div class="card-body">
         <% if (typeof error !== 'undefined') { %>
         <div class="alert alert-danger"><%= error %></div>
         <% } %>
-        <form action="/pl/update/<%= profile.id %>" method="POST">
+        <form action="/pl/daftar" method="POST">
           <div class="mb-3">
             <label for="kode_pl" class="form-label">Kode PL</label>
             <input
@@ -17,7 +17,8 @@
               id="kode_pl"
               name="kode_pl"
               required
-              value="<%= profile.kode_pl %>"
+              placeholder="e.g., PL01"
+              value="<%= typeof formData !== 'undefined' ? formData.kode_pl : '' %>"
             />
           </div>
 
@@ -31,8 +32,9 @@
               name="deskripsi"
               rows="4"
               required
+              placeholder="Deskripsi kemampuan lulusan..."
             >
-<%= profile.deskripsi %></textarea
+<%= typeof formData !== 'undefined' ? formData.deskripsi : '' %></textarea
             >
           </div>
 
@@ -43,14 +45,15 @@
               id="referensi"
               name="referensi"
               rows="3"
+              placeholder="e.g., - IS2020&#10;- Permendikbudristek No. 53/2023&#10;- SKKNI level 6 bidang TIK"
             >
-<%= profile.referensi %></textarea
+<%= typeof formData !== 'undefined' ? formData.referensi : '' %></textarea
             >
           </div>
 
           <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-warning">Update</button>
-            <a href="/pl" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/pl/daftar" class="btn btn-secondary">Cancel</a>
           </div>
         </form>
       </div>
@@ -58,4 +61,4 @@
   </div>
 </div>
 
-<%- contentFor('title') %> Edit Profil Lulusan
+<%- contentFor('title') %> Add Profil Lulusan
