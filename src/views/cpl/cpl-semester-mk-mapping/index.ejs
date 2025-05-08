@@ -8,6 +8,35 @@
 </div>
 
 <style>
+  /* CSS for fixed/frozen columns */
+  .table-responsive {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .freeze-column-1 {
+    position: sticky;
+    background-color: white;
+    left: 0;
+    z-index: 2;
+  }
+
+  /* Add shadow effect to show depth */
+  .freeze-column-1::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -5px;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  }
+
+  /* Style for the header cells */
+  thead .freeze-column-1 {
+    background-color: #cff4fc; /* Match bootstrap table-info class */
+  }
+
   /* Custom tooltip styling */
   .custom-tooltip {
     position: absolute;
@@ -22,14 +51,27 @@
 
   .cpl-code {
     cursor: help;
+    font-weight: bold;
+  }
+
+  /* Style for MK codes */
+  .mk-list {
+    font-size: 0.9em;
+    word-break: break-all;
   }
 </style>
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped">
-    <thead class="table-dark">
+    <thead class="table-info">
       <tr>
-        <th rowspan="2" class="align-middle text-center">CPL</th>
+        <th
+          rowspan="2"
+          class="align-middle freeze-column-1"
+          style="min-width: 100px"
+        >
+          CPL
+        </th>
         <th colspan="<%= semesters.length %>" class="text-center">Semester</th>
       </tr>
       <tr>
@@ -39,11 +81,11 @@
         <% }) %> <% } %>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="table-group-divider">
       <% if (cpls && cpls.length > 0) { %> <% cpls.forEach((cpl) => { %>
       <tr>
         <td
-          class="fw-bold cpl-code"
+          class="freeze-column-1 cpl-code"
           data-toggle="tooltip"
           title="<%= cpl.deskripsi %>"
           data-cpl-code="<%= cpl.kode_cpl %>"
@@ -55,7 +97,8 @@
         <td class="text-center">
           <% const mks = mappingLookup[cpl.kode_cpl] &&
           mappingLookup[cpl.kode_cpl][semester] ?
-          mappingLookup[cpl.kode_cpl][semester] : ''; %> <%= mks %>
+          mappingLookup[cpl.kode_cpl][semester] : ''; %>
+          <div class="mk-list"><%= mks %></div>
         </td>
         <% }) %>
       </tr>

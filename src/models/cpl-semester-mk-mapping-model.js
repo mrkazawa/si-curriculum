@@ -3,7 +3,7 @@ const connectDB = require("../config/database");
 const connection = connectDB();
 
 // Model functions for mapping operations
-const CplSemesterMkModel = {
+const CplSemesterMkMappingModel = {
   // Get all CPLs
   getAllCpl: (callback) => {
     connection.query(
@@ -35,4 +35,4 @@ const CplSemesterMkModel = {
   },
 };
 
-module.exports = CplSemesterMkModel;
+module.exports = CplSemesterMkMappingModel;

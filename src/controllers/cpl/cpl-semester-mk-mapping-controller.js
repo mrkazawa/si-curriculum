@@ -1,5 +1,5 @@
-const CplSemesterMkModel = require("../models/cplSemesterMkModel");
-const CplModel = require("../models/cpl-model");
+const CplSemesterMkMappingModel = require("../../models/cpl-semester-mk-mapping-model");
+const CplModel = require("../../models/cpl-model");
 
 exports.renderMappingTable = (req, res) => {
   // Get all CPLs
@@ -10,7 +10,7 @@ exports.renderMappingTable = (req, res) => {
     }
 
     // Get the mapping data
-    CplSemesterMkModel.getMappingData((mappingErr, mappings) => {
+    CplSemesterMkMappingModel.getMappingData((mappingErr, mappings) => {
       if (mappingErr) {
         console.error("Error fetching mappings:", mappingErr);
         return res.status(500).send("Error fetching mappings");
@@ -36,7 +36,7 @@ exports.renderMappingTable = (req, res) => {
         }
       });
 
-      res.render("cpl-semester-mk-mapping/index", {
+      res.render("cpl/cpl-semester-mk-mapping/index", {
         cpls: cpls,
         semesters: semesters,
         mappingLookup: mappingLookup,
