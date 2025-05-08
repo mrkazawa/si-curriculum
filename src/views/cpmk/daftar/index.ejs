@@ -8,15 +8,15 @@
 </div>
 
 <table class="table table-bordered table-striped">
-  <thead class="table-dark">
+  <thead class="table-info align-top">
     <tr>
       <th>No</th>
       <th>Kode CPMK</th>
       <th>Deskripsi</th>
-      <th>Actions</th>
+      <th style="width: 130px">Actions</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="table-group-divider">
     <% if (cpmks && cpmks.length > 0) { %> <% cpmks.forEach((cpmk, index) => {
     %>
     <tr>

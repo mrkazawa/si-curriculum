@@ -3,21 +3,21 @@
     <h2>Profil Lulusan (PL)</h2>
   </div>
   <div class="col text-end">
-    <a href="/pl/daftar/form" class="btn btn-primary">Add New Profile</a>
+    <a href="/pl/daftar/form" class="btn btn-primary">Add New PL</a>
   </div>
 </div>
 
 <table class="table table-bordered table-striped">
-  <thead class="table-dark">
+  <thead class="table-info align-top">
     <tr>
       <th>No</th>
       <th>Kode PL</th>
       <th>Profil Lulusan (PL)</th>
       <th>Referensi</th>
-      <th>Actions</th>
+      <th style="width: 130px">Actions</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="table-group-divider">
     <% if (profiles && profiles.length > 0) { %> <% profiles.forEach((profile,
     index) => { %>
     <tr>

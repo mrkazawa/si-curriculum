@@ -8,16 +8,16 @@
 </div>
 
 <table class="table table-bordered table-striped">
-  <thead class="table-dark">
+  <thead class="table-info align-top">
     <tr>
       <th>No</th>
       <th>Kode CPL</th>
       <th>Deskripsi CPL</th>
       <th>Referensi</th>
-      <th>Actions</th>
+      <th style="width: 130px">Actions</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="table-group-divider">
     <% if (cpls && cpls.length > 0) { %> <% cpls.forEach((cpl, index) => { %>
     <tr>
       <td><%= index + 1 %></td>
