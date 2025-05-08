@@ -24,6 +24,18 @@ const renderFormWithError = (res, view, errorMessage, formData = {}) => {
   });
 };
 
+// Get next MK code for auto-generation
+exports.getNextCode = (req, res) => {
+  MkModel.getNextCode((err, nextCode) => {
+    if (err) {
+      console.error("Error getting next MK code:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    res.json({ nextCode: nextCode });
+  });
+};
+
 // Render the form for adding a new MK
 exports.renderForm = (req, res) => {
   // Default semester value for new MK

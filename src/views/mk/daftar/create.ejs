@@ -13,11 +13,12 @@
             <label for="kode_mk" class="form-label">Kode MK</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control bg-light"
               id="kode_mk"
               name="kode_mk"
-              required
-              placeholder="e.g., MK01"
+              readonly
+              tabindex="-1"
+              style="pointer-events: none;"
               value="<%= typeof formData !== 'undefined' ? formData.kode_mk : '' %>"
             />
           </div>
@@ -116,6 +117,25 @@
   document.addEventListener('DOMContentLoaded', function() {
     const semesterSelect = document.getElementById('semester');
     const prasyaratSelect = document.getElementById('prasyarat');
+    const kodeMkInput = document.getElementById('kode_mk');
+    
+    // Make an AJAX call to get the next MK code
+    fetch("/mk/daftar/next-code")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        kodeMkInput.value = data.nextCode;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        kodeMkInput.value = "Error generating code";
+        // Show an alert to the user
+        alert("Failed to generate MK code. Please try again or contact support.");
+      });
     
     semesterSelect.addEventListener('change', function() {
       const semester = this.value;

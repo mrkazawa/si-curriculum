@@ -3,6 +3,9 @@ const express = require("express");
 const router = express.Router();
 const daftarMkController = require("../../controllers/mk/daftar-mk-controller");
 
+// Get next MK code for auto-generation
+router.get("/next-code", daftarMkController.getNextCode);
+
 // MK routes
 router.get("/form", daftarMkController.renderForm);
 router.get("/", daftarMkController.renderTable);

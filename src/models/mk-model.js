@@ -84,6 +84,32 @@ const MkModel = {
   delete: (id, callback) => {
     connection.query("DELETE FROM mata_kuliah WHERE id = ?", [id], callback);
   },
+
+  // Get the next MK code
+  getNextCode: (callback) => {
+    connection.query(
+      "SELECT kode_mk FROM mata_kuliah ORDER BY kode_mk DESC LIMIT 1",
+      (err, results) => {
+        if (err) {
+          return callback(err, null);
+        }
+
+        let nextCode = "MK01"; // Default if no MK exists yet
+
+        if (results.length > 0) {
+          // Extract the number from the last code (e.g., "MK04" -> "04")
+          const lastCode = results[0].kode_mk;
+          const lastNumber = parseInt(lastCode.substring(2));
+
+          // Generate the next number with leading zero if needed
+          const nextNumber = lastNumber + 1;
+          nextCode = `MK${String(nextNumber).padStart(2, "0")}`;
+        }
+
+        callback(null, nextCode);
+      }
+    );
+  },
 };
 
 module.exports = MkModel;
