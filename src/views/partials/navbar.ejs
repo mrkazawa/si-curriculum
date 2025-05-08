@@ -55,13 +55,25 @@
             CPMK
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item dropdown">
           <a
-            class="nav-link <%= path === '/bk/daftar' || (path && path.startsWith('/bk/daftar/')) ? 'active' : '' %>"
-            href="/bk/daftar"
+            class="nav-link dropdown-toggle <%= path === '/bk/daftar' || (path && path.startsWith('/bk/')) ? 'active' : '' %>"
+            href="#"
+            id="bkDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
           >
             BK
           </a>
+          <ul class="dropdown-menu" aria-labelledby="bkDropdown">
+            <li><a class="dropdown-item" href="/bk/daftar">Daftar BK</a></li>
+            <li>
+              <a class="dropdown-item" href="/bk/bk-cpl-mapping"
+                >BK-CPL Mapping</a
+              >
+            </li>
+          </ul>
         </li>
         <li class="nav-item dropdown">
           <a
@@ -85,7 +97,7 @@
         </li>
         <li class="nav-item dropdown">
           <a
-            class="nav-link dropdown-toggle <%= path === '/bk-cpl-mapping' || path === '/mk-bk-mapping' || path === '/mk-cpl-mapping' || path === '/bk-cpl-mk-mapping' || path === '/cpl-semester-mk-mapping' ? 'active' : '' %>"
+            class="nav-link dropdown-toggle <%= path === '/mk-bk-mapping' || path === '/mk-cpl-mapping' || path === '/bk-cpl-mk-mapping' || path === '/cpl-semester-mk-mapping' ? 'active' : '' %>"
             href="#"
             id="mappingDropdown"
             role="button"
@@ -95,9 +107,6 @@
             Mapping
           </a>
           <ul class="dropdown-menu" aria-labelledby="mappingDropdown">
-            <li>
-              <a class="dropdown-item" href="/bk-cpl-mapping"> BK-CPL </a>
-            </li>
             <li>
               <a class="dropdown-item" href="/mk-bk-mapping"> MK-BK </a>
             </li>

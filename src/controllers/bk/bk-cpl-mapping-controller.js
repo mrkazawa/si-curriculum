@@ -1,6 +1,6 @@
-const BkCplMappingModel = require("../models/bkCplMappingModel");
-const BkModel = require("../models/bk-model");
-const CplModel = require("../models/cpl-model");
+const BkCplMappingModel = require("../../models/bk-cpl-mapping-model");
+const BkModel = require("../../models/bk-model");
+const CplModel = require("../../models/cpl-model");
 
 exports.renderMappingTable = (req, res) => {
   // Get all BKs
@@ -33,7 +33,7 @@ exports.renderMappingTable = (req, res) => {
           bkMappings[mapping.kode_bk] = mappedCPLs;
         });
 
-        res.render("bk-cpl-mapping/index", {
+        res.render("bk/bk-cpl-mapping/index", {
           bks: bks,
           cpls: cpls,
           bkMappings: bkMappings,

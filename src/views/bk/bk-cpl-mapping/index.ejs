@@ -12,10 +12,7 @@
     <thead class="table-dark">
       <tr>
         <th rowspan="2" class="align-middle">BK</th>
-        <th
-          colspan="<%= cpls.length %>"
-          class="text-center"
-        >
+        <th colspan="<%= cpls.length %>" class="text-center">
           Capaian Pembelajaran Lulusan (CPL)
         </th>
       </tr>
@@ -63,7 +60,7 @@
         // Show loading indicator or disable checkbox during update
         this.disabled = true;
 
-        fetch("/bk-cpl-mapping/update", {
+        fetch("/bk/bk-cpl-mapping/update", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
