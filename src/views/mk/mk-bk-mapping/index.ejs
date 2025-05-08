@@ -55,6 +55,21 @@
   thead .freeze-column-2 {
     background-color: #cff4fc; /* Match bootstrap table-info class */
   }
+
+  /* Style for BK descriptions */
+  .bk-header small {
+    font-weight: normal;
+    display: block;
+    font-size: 0.8rem;
+    white-space: normal;
+    max-width: 150px;
+    font-style: italic;
+  }
+
+  /* Style for hover highlight on rows */
+  tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+  }
 </style>
 
 <div class="table-responsive">
@@ -81,7 +96,15 @@
       </tr>
       <tr>
         <% if (bks && bks.length > 0) { %> <% bks.forEach(bk => { %>
-        <th class="text-center"><%= bk.kode_bk %></th>
+        <th
+          class="text-center align-top bk-header"
+          style="vertical-align: top; min-width: 150px"
+          data-toggle="tooltip"
+          title="<%= bk.kode_bk %>: <%= bk.bahan_kajian %>"
+        >
+          <%= bk.kode_bk %><br />
+          <small><i><%= bk.bahan_kajian %></i></small>
+        </th>
         <% }) %> <% } %>
       </tr>
     </thead>
@@ -95,7 +118,7 @@
           class="text-center bk-cell"
           data-bk-code="<%= bk.kode_bk %>"
           data-toggle="tooltip"
-          title="<%= bk.kode_bk %>"
+          title="<%= bk.kode_bk %>: <%= bk.bahan_kajian %>"
         >
           <% const isChecked = mkMappings[mk.kode_mk] &&
           mkMappings[mk.kode_mk].includes(bk.kode_bk); %>
@@ -153,8 +176,45 @@
         container: "body",
         html: true,
         title: function () {
-          return $(this).attr("data-tooltip-content");
+          return $(this).attr("data-tooltip-content") || $(this).attr("title");
         },
+      });
+    } else {
+      // Fallback for tooltip implementation if jQuery/Bootstrap is not available
+      const bkCells = document.querySelectorAll(".bk-cell");
+      bkCells.forEach((cell) => {
+        const title =
+          cell.getAttribute("data-tooltip-content") ||
+          cell.getAttribute("title");
+
+        cell.addEventListener("mouseenter", function () {
+          const tooltip = document.createElement("div");
+          tooltip.className = "custom-tooltip";
+          tooltip.innerHTML = title;
+          tooltip.style.position = "absolute";
+          tooltip.style.backgroundColor = "#000";
+          tooltip.style.color = "#fff";
+          tooltip.style.padding = "5px 10px";
+          tooltip.style.borderRadius = "4px";
+          tooltip.style.fontSize = "14px";
+          tooltip.style.zIndex = "1000";
+          tooltip.style.maxWidth = "300px";
+
+          document.body.appendChild(tooltip);
+
+          const rect = cell.getBoundingClientRect();
+          tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+          tooltip.style.left = `${rect.left + window.scrollX}px`;
+
+          cell.tooltip = tooltip;
+        });
+
+        cell.addEventListener("mouseleave", function () {
+          if (cell.tooltip) {
+            document.body.removeChild(cell.tooltip);
+            cell.tooltip = null;
+          }
+        });
       });
     }
 
