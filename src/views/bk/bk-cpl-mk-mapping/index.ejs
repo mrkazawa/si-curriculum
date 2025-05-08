@@ -1,0 +1,242 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Mapping BK-CPL-MK</h2>
+    <p class="text-muted">
+      Pemetaan antara Bahan Kajian, Capaian Pembelajaran Lulusan, dan Mata
+      Kuliah
+    </p>
+  </div>
+</div>
+
+<style>
+  /* CSS for fixed/frozen columns */
+  .table-responsive {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .freeze-column-1,
+  .freeze-column-2 {
+    position: sticky;
+    background-color: white;
+    z-index: 1;
+  }
+
+  .freeze-column-1 {
+    left: 0;
+    z-index: 2;
+  }
+
+  .freeze-column-2 {
+    left: calc(var(--column-1-width));
+    z-index: 2;
+  }
+
+  /* Add shadow effect to show depth */
+  .freeze-column-2::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -5px;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  }
+
+  /* Style for the header cells */
+  thead .freeze-column-1,
+  thead .freeze-column-2 {
+    background-color: #cff4fc; /* Match bootstrap table-info class */
+  }
+
+  /* Style for CPL descriptions */
+  .cpl-header small {
+    font-weight: normal;
+  }
+
+  /* Style for MK codes */
+  .mk-list {
+    font-size: 0.9em;
+    word-break: break-all;
+  }
+
+  .mk-item {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .mk-code {
+    font-weight: bold;
+    color: #0d6efd;
+  }
+
+  .mk-name {
+    display: block;
+    font-style: italic;
+    color: #495057;
+    font-size: 0.95em;
+  }
+
+  /* Custom tooltip styling */
+  .custom-tooltip {
+    position: absolute;
+    background-color: #000;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    z-index: 1000;
+    max-width: 300px;
+  }
+</style>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead class="table-info">
+      <tr>
+        <th
+          rowspan="2"
+          class="align-middle freeze-column-1"
+          style="min-width: 60px"
+        >
+          Kode BK
+        </th>
+        <th
+          rowspan="2"
+          class="align-middle freeze-column-2"
+          style="min-width: 200px"
+        >
+          Bahan Kajian
+        </th>
+        <th colspan="<%= cpls.length %>" class="text-center">
+          Capaian Pembelajaran Lulusan (CPL)
+        </th>
+      </tr>
+      <tr>
+        <% if (cpls && cpls.length > 0) { %> <% cpls.forEach(cpl => { %>
+        <th
+          class="text-center align-top cpl-header"
+          style="vertical-align: top; min-width: 250px"
+          data-cpl-code="<%= cpl.kode_cpl %>"
+          data-cpl-desc="<%= cpl.deskripsi %>"
+          data-toggle="tooltip"
+          title="<%= cpl.kode_cpl %>: <%= cpl.deskripsi %>"
+        >
+          <%= cpl.kode_cpl %><br />
+          <small><i><%= cpl.deskripsi %></i></small>
+        </th>
+        <% }) %> <% } %>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+      <% if (bks && bks.length > 0) { %> <% bks.forEach((bk, index) => { %>
+      <tr>
+        <td class="freeze-column-1"><%= bk.kode_bk %></td>
+        <td class="freeze-column-2"><%= bk.bahan_kajian %></td>
+        <% cpls.forEach(cpl => { %>
+        <td
+          class="text-center cpl-mk-cell"
+          data-cpl-code="<%= cpl.kode_cpl %>"
+          data-cpl-desc="<%= cpl.deskripsi %>"
+          data-toggle="tooltip"
+          title="<%= cpl.kode_cpl %>: <%= cpl.deskripsi %>"
+        >
+          <% const mks = mappingLookup[bk.kode_bk] &&
+          mappingLookup[bk.kode_bk][cpl.kode_cpl] ?
+          mappingLookup[bk.kode_bk][cpl.kode_cpl] : []; %>
+          <div class="mk-list">
+            <% mks.forEach(mk => { %>
+            <div class="mk-item">
+              <span class="mk-code"><%= mk.kode_mk %></span>
+              <span class="mk-name"><%= mk.nama_mk %></span>
+            </div>
+            <% }); %>
+          </div>
+        </td>
+        <% }) %>
+      </tr>
+      <% }) %> <% } else { %>
+      <tr>
+        <td colspan="<%= 2 + cpls.length %>" class="text-center">
+          No BKs available
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Set CSS variable for the width of the first column
+    const column1Width = document.querySelector(".freeze-column-1").offsetWidth;
+    document.documentElement.style.setProperty(
+      "--column-1-width",
+      column1Width + "px"
+    );
+
+    // Prevent default browser tooltips by moving title to data attribute
+    document.querySelectorAll(".cpl-header, .cpl-mk-cell").forEach((cell) => {
+      const titleContent = cell.getAttribute("title");
+      if (titleContent) {
+        cell.setAttribute("data-tooltip-content", titleContent);
+        cell.removeAttribute("title");
+      }
+    });
+
+    // Initialize tooltips if Bootstrap's tooltip is available
+    if (typeof $ !== "undefined" && $.fn.tooltip) {
+      $('[data-toggle="tooltip"]').tooltip({
+        container: "body",
+        html: true,
+      });
+    } else {
+      // Fallback for tooltip implementation if jQuery/Bootstrap is not available
+      const tooltipElements = document.querySelectorAll(
+        ".cpl-header, .cpl-mk-cell"
+      );
+      tooltipElements.forEach((cell) => {
+        const title =
+          cell.getAttribute("data-tooltip-content") ||
+          cell.getAttribute("data-cpl-code") +
+            ": " +
+            cell.getAttribute("data-cpl-desc");
+
+        cell.addEventListener("mouseenter", function (event) {
+          const tooltip = document.createElement("div");
+          tooltip.className = "custom-tooltip";
+          tooltip.innerHTML = title;
+
+          document.body.appendChild(tooltip);
+
+          const rect = cell.getBoundingClientRect();
+
+          // Position differently based on whether it's a header or cell
+          if (cell.classList.contains("cpl-header")) {
+            tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+            tooltip.style.left = `${rect.left + window.scrollX}px`;
+          } else {
+            // For table cells, show tooltip above the cursor to avoid blocking content
+            tooltip.style.top = `${
+              event.clientY + window.scrollY - tooltip.offsetHeight - 10
+            }px`;
+            tooltip.style.left = `${
+              event.clientX + window.scrollX - tooltip.offsetWidth / 2
+            }px`;
+          }
+
+          cell.tooltip = tooltip;
+        });
+
+        cell.addEventListener("mouseleave", function () {
+          if (cell.tooltip) {
+            document.body.removeChild(cell.tooltip);
+            cell.tooltip = null;
+          }
+        });
+      });
+    }
+  });
+</script>
+
+<%- contentFor('title') %> BK-CPL-MK Mapping

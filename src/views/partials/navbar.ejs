@@ -73,6 +73,11 @@
                 >BK-CPL Mapping</a
               >
             </li>
+            <li>
+              <a class="dropdown-item" href="/bk/bk-cpl-mk-mapping"
+                >BK-CPL-MK Mapping</a
+              >
+            </li>
           </ul>
         </li>
         <li class="nav-item dropdown">
@@ -105,27 +110,13 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item dropdown">
+        <li class="nav-item">
           <a
-            class="nav-link dropdown-toggle <%= path === '/bk-cpl-mk-mapping' || path === '/cpl-semester-mk-mapping' ? 'active' : '' %>"
-            href="#"
-            id="mappingDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
+            class="nav-link <%= path === '/cpl-semester-mk-mapping' ? 'active' : '' %>"
+            href="/cpl-semester-mk-mapping"
           >
-            Mapping
+            CPL-Semester-MK
           </a>
-          <ul class="dropdown-menu" aria-labelledby="mappingDropdown">
-            <li>
-              <a class="dropdown-item" href="/bk-cpl-mk-mapping"> BK-CPL-MK </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/cpl-semester-mk-mapping">
-                CPL-Semester-MK
-              </a>
-            </li>
-          </ul>
         </li>
       </ul>
     </div>

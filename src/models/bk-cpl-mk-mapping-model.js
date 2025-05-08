@@ -4,18 +4,18 @@ const connection = connectDB();
 
 // Model functions for mapping operations
 const BkCplMkMappingModel = {
-  // Get all BKs
+  // Get all BKs with details
   getAllBk: (callback) => {
     connection.query(
-      "SELECT kode_bk FROM bahan_kajian ORDER BY kode_bk",
+      "SELECT kode_bk, bahan_kajian FROM bahan_kajian ORDER BY kode_bk",
       callback
     );
   },
 
-  // Get all CPLs
+  // Get all CPLs with details
   getAllCpl: (callback) => {
     connection.query(
-      "SELECT kode_cpl FROM capaian_pembelajaran_lulusan ORDER BY kode_cpl",
+      "SELECT kode_cpl, deskripsi FROM capaian_pembelajaran_lulusan ORDER BY kode_cpl",
       callback
     );
   },
@@ -25,8 +25,11 @@ const BkCplMkMappingModel = {
     const mappingQuery = `
       SELECT 
         bk.kode_bk, 
-        cpl.kode_cpl, 
-        GROUP_CONCAT(mk.kode_mk ORDER BY mk.kode_mk SEPARATOR ', ') AS kode_mks
+        cpl.kode_cpl,
+        GROUP_CONCAT(
+          CONCAT(mk.kode_mk, ':', mk.nama_mk)
+          ORDER BY mk.kode_mk SEPARATOR '||'
+        ) AS mk_data
       FROM 
         bahan_kajian bk
       CROSS JOIN 

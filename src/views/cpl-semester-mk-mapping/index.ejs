@@ -7,6 +7,24 @@
   </div>
 </div>
 
+<style>
+  /* Custom tooltip styling */
+  .custom-tooltip {
+    position: absolute;
+    background-color: #000;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    z-index: 1000;
+    max-width: 300px;
+  }
+
+  .cpl-code {
+    cursor: help;
+  }
+</style>
+
 <div class="table-responsive">
   <table class="table table-bordered table-striped">
     <thead class="table-dark">
@@ -24,7 +42,15 @@
     <tbody>
       <% if (cpls && cpls.length > 0) { %> <% cpls.forEach((cpl) => { %>
       <tr>
-        <td class="fw-bold"><%= cpl.kode_cpl %></td>
+        <td
+          class="fw-bold cpl-code"
+          data-toggle="tooltip"
+          title="<%= cpl.deskripsi %>"
+          data-cpl-code="<%= cpl.kode_cpl %>"
+          data-cpl-desc="<%= cpl.deskripsi %>"
+        >
+          <%= cpl.kode_cpl %>
+        </td>
         <% semesters.forEach(semester => { %>
         <td class="text-center">
           <% const mks = mappingLookup[cpl.kode_cpl] &&
@@ -43,5 +69,55 @@
     </tbody>
   </table>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Prevent default browser tooltips by moving title to data attribute
+    document.querySelectorAll(".cpl-code").forEach((cell) => {
+      const titleContent = cell.getAttribute("title");
+      if (titleContent) {
+        cell.setAttribute("data-tooltip-content", titleContent);
+        cell.removeAttribute("title");
+      }
+    });
+
+    // Initialize tooltips if Bootstrap's tooltip is available
+    if (typeof $ !== "undefined" && $.fn.tooltip) {
+      $('[data-toggle="tooltip"]').tooltip({
+        container: "body",
+        html: true,
+      });
+    } else {
+      // Fallback for tooltip implementation if jQuery/Bootstrap is not available
+      const cplCodes = document.querySelectorAll(".cpl-code");
+      cplCodes.forEach((cell) => {
+        const title =
+          cell.getAttribute("data-tooltip-content") ||
+          cell.getAttribute("data-cpl-desc");
+
+        cell.addEventListener("mouseenter", function () {
+          const tooltip = document.createElement("div");
+          tooltip.className = "custom-tooltip";
+          tooltip.innerHTML = title;
+
+          document.body.appendChild(tooltip);
+
+          const rect = cell.getBoundingClientRect();
+          tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+          tooltip.style.left = `${rect.left + window.scrollX}px`;
+
+          cell.tooltip = tooltip;
+        });
+
+        cell.addEventListener("mouseleave", function () {
+          if (cell.tooltip) {
+            document.body.removeChild(cell.tooltip);
+            cell.tooltip = null;
+          }
+        });
+      });
+    }
+  });
+</script>
 
 <%- contentFor('title') %> CPL-Semester-MK Mapping
