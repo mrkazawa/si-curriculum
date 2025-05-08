@@ -12,13 +12,76 @@
   </div>
 </div>
 
+<style>
+  /* CSS for fixed/frozen columns */
+  .table-responsive {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .freeze-column-1,
+  .freeze-column-2 {
+    position: sticky;
+    background-color: white;
+    z-index: 1;
+  }
+
+  .freeze-column-1 {
+    left: 0;
+    z-index: 2;
+  }
+
+  .freeze-column-2 {
+    left: calc(var(--column-1-width));
+    z-index: 2;
+  }
+
+  /* Disable default browser tooltips */
+  .pl-cell[data-tooltip-content] {
+    title: none;
+  }
+
+  /* Add shadow effect to show depth */
+  .freeze-column-2::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -5px;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  }
+
+  /* Style for the header cells */
+  thead .freeze-column-1,
+  thead .freeze-column-2 {
+    background-color: #cff4fc; /* Match bootstrap table-info class */
+  }
+
+  /* Style for PL descriptions */
+  .pl-header small {
+    font-weight: normal;
+  }
+</style>
+
 <div class="table-responsive">
   <table class="table table-bordered table-striped">
-    <thead class="table-dark">
+    <thead class="table-info">
       <tr>
-        <th class="align-middle">No</th>
-        <th class="align-middle">Kode CPL</th>
-        <th class="align-middle">Deskripsi CPL</th>
+        <th
+          rowspan="2"
+          class="align-middle freeze-column-1"
+          style="min-width: 100px"
+        >
+          Kode CPL
+        </th>
+        <th
+          rowspan="2"
+          class="align-middle freeze-column-2"
+          style="min-width: 250px"
+        >
+          Deskripsi CPL
+        </th>
         <% if (pls && pls.length > 0) { %>
         <th colspan="<%= pls.length %>" class="text-center">
           Profil Lulusan (PL)
@@ -29,21 +92,33 @@
       </tr>
       <% if (pls && pls.length > 0) { %>
       <tr>
-        <th colspan="3"></th>
+        <th colspan="2" class="d-none"></th>
         <% pls.forEach(pl => { %>
-        <th class="text-center"><%= pl.kode_pl %></th>
+        <th
+          class="text-center align-top pl-header"
+          style="vertical-align: top; min-width: 200px"
+          data-pl-code="<%= pl.kode_pl %>"
+          data-pl-desc="<%= pl.deskripsi %>"
+        >
+          <%= pl.kode_pl %><br />
+          <small><i><%= pl.deskripsi %></i></small>
+        </th>
         <% }) %>
       </tr>
       <% } %>
     </thead>
-    <tbody>
+    <tbody class="table-group-divider">
       <% if (cpls && cpls.length > 0) { %> <% cpls.forEach((cpl, index) => { %>
       <tr>
-        <td><%= index + 1 %></td>
-        <td><%= cpl.kode_cpl %></td>
-        <td><%= cpl.deskripsi %></td>
+        <td class="freeze-column-1"><%= cpl.kode_cpl %></td>
+        <td class="freeze-column-2"><%= cpl.deskripsi %></td>
         <% pls.forEach(pl => { %>
-        <td class="text-center">
+        <td
+          class="text-center pl-cell"
+          data-pl-code="<%= pl.kode_pl %>"
+          data-toggle="tooltip"
+          title="<%= pl.kode_pl %>: <%= pl.deskripsi %>"
+        >
           <% const isChecked = cplMappings[cpl.kode_cpl] &&
           cplMappings[cpl.kode_cpl].includes(pl.kode_pl); %>
           <div class="view-mode">
@@ -61,7 +136,7 @@
       </tr>
       <% }) %> <% } else { %>
       <tr>
-        <td colspan="<%= 3 + pls.length %>" class="text-center">
+        <td colspan="<%= 2 + pls.length %>" class="text-center">
           No CPLs available
         </td>
       </tr>
@@ -72,53 +147,114 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // Get all elements we need to interact with
     const editToggleBtn = document.getElementById("edit-toggle-btn");
+    const viewModes = document.querySelectorAll(".view-mode");
+    const editModes = document.querySelectorAll(".edit-mode");
     const checkboxes = document.querySelectorAll(".mapping-checkbox");
-    let isEditMode = false;
 
-    // Initialize view mode elements to be visible by default
-    document.querySelectorAll(".view-mode").forEach((el) => {
-      el.style.display = "block";
+    // Set CSS variable for the width of the columns
+    const column1Width = document.querySelector(".freeze-column-1").offsetWidth;
+    document.documentElement.style.setProperty(
+      "--column-1-width",
+      column1Width + "px"
+    );
+
+    // Prevent default browser tooltips by moving title to data attribute
+    document.querySelectorAll(".pl-cell").forEach((cell) => {
+      const titleContent = cell.getAttribute("title");
+      if (titleContent) {
+        cell.setAttribute("data-tooltip-content", titleContent);
+        cell.removeAttribute("title");
+      }
     });
 
-    document.querySelectorAll(".edit-mode").forEach((el) => {
-      el.style.display = "none";
-    });
+    // Initialize tooltips if Bootstrap's tooltip is available
+    if (typeof $ !== "undefined" && $.fn.tooltip) {
+      $('[data-toggle="tooltip"]').tooltip({
+        container: "body",
+        html: true,
+        title: function () {
+          return $(this).attr("data-tooltip-content");
+        },
+      });
+    } else {
+      // Fallback for tooltip implementation if jQuery/Bootstrap is not available
+      const plCells = document.querySelectorAll(".pl-cell");
+      plCells.forEach((cell) => {
+        const title = cell.getAttribute("data-tooltip-content");
 
-    // Function to toggle between view and edit mode
+        cell.addEventListener("mouseenter", function () {
+          const tooltip = document.createElement("div");
+          tooltip.className = "custom-tooltip";
+          tooltip.innerHTML = title;
+          tooltip.style.position = "absolute";
+          tooltip.style.backgroundColor = "#000";
+          tooltip.style.color = "#fff";
+          tooltip.style.padding = "5px 10px";
+          tooltip.style.borderRadius = "4px";
+          tooltip.style.fontSize = "14px";
+          tooltip.style.zIndex = "1000";
+          tooltip.style.maxWidth = "300px";
+
+          document.body.appendChild(tooltip);
+
+          const rect = cell.getBoundingClientRect();
+          tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+          tooltip.style.left = `${rect.left + window.scrollX}px`;
+
+          cell.tooltip = tooltip;
+        });
+
+        cell.addEventListener("mouseleave", function () {
+          if (cell.tooltip) {
+            document.body.removeChild(cell.tooltip);
+            cell.tooltip = null;
+          }
+        });
+      });
+    }
+
+    // We start in view mode
+    let editMode = false;
+
+    // Function to toggle between view and edit modes
     function toggleEditMode() {
-      isEditMode = !isEditMode;
+      editMode = !editMode;
 
-      // Toggle visibility of view/edit mode elements
-      document.querySelectorAll(".view-mode").forEach((el) => {
-        el.style.display = isEditMode ? "none" : "block";
+      viewModes.forEach((elem) => {
+        elem.style.display = editMode ? "none" : "block";
       });
 
-      document.querySelectorAll(".edit-mode").forEach((el) => {
-        el.style.display = isEditMode ? "block" : "none";
+      editModes.forEach((elem) => {
+        elem.style.display = editMode ? "block" : "none";
       });
 
       // Update button text
-      if (isEditMode) {
+      if (editMode) {
         editToggleBtn.innerHTML = '<i class="fas fa-check"></i> Done';
-        editToggleBtn.classList.replace("btn-primary", "btn-success");
+        editToggleBtn.classList.replace("btn-warning", "btn-success");
       } else {
         editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
-        editToggleBtn.classList.replace("btn-success", "btn-primary");
+        editToggleBtn.classList.replace("btn-success", "btn-warning");
       }
     }
 
     // Add event listener for the edit toggle button
     editToggleBtn.addEventListener("click", toggleEditMode);
 
-    // Checkbox change event handler - same as before
+    // Handle checkbox changes - mapping/unmapping
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("change", function () {
         const kodeCpl = this.dataset.cpl;
         const kodePl = this.dataset.pl;
         const isChecked = this.checked;
 
-        // Show loading indicator or disable checkbox during update
+        // Find the corresponding view mode element
+        const tdCell = this.closest("td");
+        const viewModeElement = tdCell.querySelector(".view-mode");
+
+        // Disable checkbox during update to prevent multiple clicks
         this.disabled = true;
 
         fetch("/cpl/cpl-pl-mapping/update", {
@@ -135,32 +271,31 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              // Success indication (optional)
-              console.log(
-                `Mapping ${isChecked ? "created" : "removed"} successfully`
-              );
+              // Re-enable checkbox after successful update
+              this.disabled = false;
 
-              // Update the corresponding view mode checkmark
-              const viewCell = this.closest("td").querySelector(".view-mode");
+              // Update the view mode element to reflect the new checkbox state
               if (isChecked) {
-                viewCell.innerHTML = '<span class="text-success">✓</span>';
+                viewModeElement.innerHTML =
+                  '<span class="text-success">✔</span>';
               } else {
-                viewCell.innerHTML = "";
+                viewModeElement.innerHTML = "";
               }
             } else {
-              // Revert the checkbox state if the operation failed
+              // If there was an error, revert the checkbox
               this.checked = !isChecked;
-              console.error("Failed to update mapping");
+              this.disabled = false;
+              alert(
+                "Error updating mapping: " + (data.message || "Unknown error")
+              );
             }
           })
           .catch((error) => {
-            // Revert the checkbox state on error
-            this.checked = !isChecked;
+            // Handle network or other errors
             console.error("Error:", error);
-          })
-          .finally(() => {
-            // Re-enable the checkbox
+            this.checked = !isChecked;
             this.disabled = false;
+            alert("Error updating mapping: Network error");
           });
       });
     });
