@@ -14,23 +14,28 @@
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped">
-    <thead class="table-dark">
+    <thead class="table-light">
       <tr>
-        <th rowspan="2" class="align-middle">BK</th>
+        <th rowspan="2" class="align-middle">Kode BK</th>
+        <th rowspan="2" class="align-middle">Bahan Kajian</th>
         <th colspan="<%= cpls.length %>" class="text-center">
           Capaian Pembelajaran Lulusan (CPL)
         </th>
       </tr>
       <tr>
         <% if (cpls && cpls.length > 0) { %> <% cpls.forEach(cpl => { %>
-        <th class="text-center"><%= cpl.kode_cpl %></th>
+        <th class="text-center align-top" style="vertical-align: top">
+          <%= cpl.kode_cpl %><br />
+          <small><i><%= cpl.deskripsi %></i></small>
+        </th>
         <% }) %> <% } %>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="table-group-divider">
       <% if (bks && bks.length > 0) { %> <% bks.forEach((bk, index) => { %>
       <tr>
         <td><%= bk.kode_bk %></td>
+        <td><%= bk.bahan_kajian %></td>
         <% cpls.forEach(cpl => { %>
         <td class="text-center">
           <% const isChecked = bkMappings[bk.kode_bk] &&
@@ -50,7 +55,7 @@
       </tr>
       <% }) %> <% } else { %>
       <tr>
-        <td colspan="<%= 1 + cpls.length %>" class="text-center">
+        <td colspan="<%= 2 + cpls.length %>" class="text-center">
           No BKs available
         </td>
       </tr>
@@ -61,34 +66,29 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // Get all elements we need to interact with
     const editToggleBtn = document.getElementById("edit-toggle-btn");
+    const viewModes = document.querySelectorAll(".view-mode");
+    const editModes = document.querySelectorAll(".edit-mode");
     const checkboxes = document.querySelectorAll(".mapping-checkbox");
-    let isEditMode = false;
 
-    // Initialize view mode elements to be visible by default
-    document.querySelectorAll(".view-mode").forEach((el) => {
-      el.style.display = "block";
-    });
+    // We start in view mode
+    let editMode = false;
 
-    document.querySelectorAll(".edit-mode").forEach((el) => {
-      el.style.display = "none";
-    });
-
-    // Function to toggle between view and edit mode
+    // Function to toggle between view and edit modes
     function toggleEditMode() {
-      isEditMode = !isEditMode;
+      editMode = !editMode;
 
-      // Toggle visibility of view/edit mode elements
-      document.querySelectorAll(".view-mode").forEach((el) => {
-        el.style.display = isEditMode ? "none" : "block";
+      viewModes.forEach((elem) => {
+        elem.style.display = editMode ? "none" : "block";
       });
 
-      document.querySelectorAll(".edit-mode").forEach((el) => {
-        el.style.display = isEditMode ? "block" : "none";
+      editModes.forEach((elem) => {
+        elem.style.display = editMode ? "block" : "none";
       });
 
       // Update button text
-      if (isEditMode) {
+      if (editMode) {
         editToggleBtn.innerHTML = '<i class="fas fa-check"></i> Done';
         editToggleBtn.classList.replace("btn-warning", "btn-success");
       } else {
@@ -100,16 +100,21 @@
     // Add event listener for the edit toggle button
     editToggleBtn.addEventListener("click", toggleEditMode);
 
-    // Checkbox change event handler
+    // Handle checkbox changes - mapping/unmapping
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("change", function () {
         const kodeBk = this.dataset.bk;
         const kodeCpl = this.dataset.cpl;
         const isChecked = this.checked;
 
-        // Show loading indicator or disable checkbox during update
+        // Find the corresponding view mode element
+        const tdCell = this.closest("td");
+        const viewModeElement = tdCell.querySelector(".view-mode");
+
+        // Disable checkbox during update to prevent multiple clicks
         this.disabled = true;
 
+        // Send the update to the server
         fetch("/bk/bk-cpl-mapping/update", {
           method: "POST",
           headers: {
@@ -124,32 +129,31 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              // Success indication
-              console.log(
-                `Mapping ${isChecked ? "created" : "removed"} successfully`
-              );
+              // Re-enable checkbox after successful update
+              this.disabled = false;
 
-              // Update the corresponding view mode checkmark
-              const viewCell = this.closest("td").querySelector(".view-mode");
+              // Update the view mode element to reflect the new checkbox state
               if (isChecked) {
-                viewCell.innerHTML = '<span class="text-success">✔</span>';
+                viewModeElement.innerHTML =
+                  '<span class="text-success">✔</span>';
               } else {
-                viewCell.innerHTML = "";
+                viewModeElement.innerHTML = "";
               }
             } else {
-              // Revert the checkbox state if the operation failed
+              // If there was an error, revert the checkbox
               this.checked = !isChecked;
-              console.error("Failed to update mapping");
+              this.disabled = false;
+              alert(
+                "Error updating mapping: " + (data.message || "Unknown error")
+              );
             }
           })
           .catch((error) => {
-            // Revert the checkbox state on error
-            this.checked = !isChecked;
+            // Handle network or other errors
             console.error("Error:", error);
-          })
-          .finally(() => {
-            // Re-enable the checkbox
+            this.checked = !isChecked;
             this.disabled = false;
+            alert("Error updating mapping: Network error");
           });
       });
     });

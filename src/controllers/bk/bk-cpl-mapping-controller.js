@@ -10,7 +10,7 @@ exports.renderMappingTable = (req, res) => {
       return res.status(500).send("Error fetching BKs");
     }
 
-    // Get all CPLs
+    // Get all CPLs with full information including descriptions
     CplModel.getAll((cplErr, cpls) => {
       if (cplErr) {
         console.error("Error fetching CPLs:", cplErr);
