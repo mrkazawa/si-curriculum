@@ -1,14 +1,14 @@
 <div class="row">
   <div class="col-md-8 offset-md-2">
     <div class="card">
-      <div class="card-header bg-primary text-white">
-        <h3>Add Mata Kuliah (MK)</h3>
+      <div class="card-header bg-warning text-dark">
+        <h3>Edit Mata Kuliah (MK)</h3>
       </div>
       <div class="card-body">
         <% if (typeof error !== 'undefined') { %>
           <div class="alert alert-danger"><%= error %></div>
         <% } %>
-        <form action="/mk" method="POST">
+        <form action="/mk/daftar/update/<%= mk.id %>" method="POST">
           <div class="mb-3">
             <label for="kode_mk" class="form-label">Kode MK</label>
             <input
@@ -17,8 +17,7 @@
               id="kode_mk"
               name="kode_mk"
               required
-              placeholder="e.g., MK01"
-              value="<%= typeof formData !== 'undefined' ? formData.kode_mk : '' %>"
+              value="<%= mk.kode_mk %>"
             />
           </div>
 
@@ -30,27 +29,24 @@
               id="nama_mk"
               name="nama_mk"
               required
-              placeholder="e.g., Konsep Sistem Informasi"
-              value="<%= typeof formData !== 'undefined' ? formData.nama_mk : '' %>"
+              value="<%= mk.nama_mk %>"
             />
           </div>
 
           <div class="mb-3">
             <label for="kompetensi" class="form-label">Kompetensi</label>
             <select class="form-select" id="kompetensi" name="kompetensi" required>
-              <option value="" disabled <%= typeof formData === 'undefined' ? 'selected' : '' %>>Pilih Kompetensi</option>
-              <option value="Utama" <%= typeof formData !== 'undefined' && formData.kompetensi === 'Utama' ? 'selected' : '' %>>Utama</option>
-              <option value="Pendukung" <%= typeof formData !== 'undefined' && formData.kompetensi === 'Pendukung' ? 'selected' : '' %>>Pendukung</option>
+              <option value="Utama" <%= mk.kompetensi === 'Utama' ? 'selected' : '' %>>Utama</option>
+              <option value="Pendukung" <%= mk.kompetensi === 'Pendukung' ? 'selected' : '' %>>Pendukung</option>
             </select>
           </div>
           
           <div class="mb-3">
             <label for="jenis_mk" class="form-label">Jenis MK</label>
             <select class="form-select" id="jenis_mk" name="jenis_mk" required>
-              <option value="" disabled <%= typeof formData === 'undefined' ? 'selected' : '' %>>Pilih Jenis MK</option>
-              <option value="MK Wajib" <%= typeof formData !== 'undefined' && formData.jenis_mk === 'MK Wajib' ? 'selected' : '' %>>MK Wajib</option>
-              <option value="MK Pilihan" <%= typeof formData !== 'undefined' && formData.jenis_mk === 'MK Pilihan' ? 'selected' : '' %>>MK Pilihan</option>
-              <option value="MKWK" <%= typeof formData !== 'undefined' && formData.jenis_mk === 'MKWK' ? 'selected' : '' %>>MKWK</option>
+              <option value="MK Wajib" <%= mk.jenis_mk === 'MK Wajib' ? 'selected' : '' %>>MK Wajib</option>
+              <option value="MK Pilihan" <%= mk.jenis_mk === 'MK Pilihan' ? 'selected' : '' %>>MK Pilihan</option>
+              <option value="MKWK" <%= mk.jenis_mk === 'MKWK' ? 'selected' : '' %>>MKWK</option>
             </select>
           </div>
 
@@ -63,35 +59,33 @@
               name="sks"
               min="1"
               required
-              placeholder="e.g., 3"
-              value="<%= typeof formData !== 'undefined' ? formData.sks : '' %>"
+              value="<%= mk.sks %>"
             />
           </div>
 
           <div class="mb-3">
             <label for="semester" class="form-label">Semester</label>
             <select class="form-select" id="semester" name="semester" required>
-              <option value="" disabled <%= typeof formData === 'undefined' && typeof selectedSemester === 'undefined' ? 'selected' : '' %>>Pilih Semester</option>
-              <option value="1" <%= (typeof formData !== 'undefined' && formData.semester == 1) || selectedSemester == 1 ? 'selected' : '' %>>1 (I)</option>
-              <option value="2" <%= (typeof formData !== 'undefined' && formData.semester == 2) || selectedSemester == 2 ? 'selected' : '' %>>2 (II)</option>
-              <option value="3" <%= (typeof formData !== 'undefined' && formData.semester == 3) || selectedSemester == 3 ? 'selected' : '' %>>3 (III)</option>
-              <option value="4" <%= (typeof formData !== 'undefined' && formData.semester == 4) || selectedSemester == 4 ? 'selected' : '' %>>4 (IV)</option>
-              <option value="5" <%= (typeof formData !== 'undefined' && formData.semester == 5) || selectedSemester == 5 ? 'selected' : '' %>>5 (V)</option>
-              <option value="6" <%= (typeof formData !== 'undefined' && formData.semester == 6) || selectedSemester == 6 ? 'selected' : '' %>>6 (VI)</option>
-              <option value="7" <%= (typeof formData !== 'undefined' && formData.semester == 7) || selectedSemester == 7 ? 'selected' : '' %>>7 (VII)</option>
-              <option value="8" <%= (typeof formData !== 'undefined' && formData.semester == 8) || selectedSemester == 8 ? 'selected' : '' %>>8 (VIII)</option>
+              <option value="1" <%= mk.semester == 1 ? 'selected' : '' %>>1 (I)</option>
+              <option value="2" <%= mk.semester == 2 ? 'selected' : '' %>>2 (II)</option>
+              <option value="3" <%= mk.semester == 3 ? 'selected' : '' %>>3 (III)</option>
+              <option value="4" <%= mk.semester == 4 ? 'selected' : '' %>>4 (IV)</option>
+              <option value="5" <%= mk.semester == 5 ? 'selected' : '' %>>5 (V)</option>
+              <option value="6" <%= mk.semester == 6 ? 'selected' : '' %>>6 (VI)</option>
+              <option value="7" <%= mk.semester == 7 ? 'selected' : '' %>>7 (VII)</option>
+              <option value="8" <%= mk.semester == 8 ? 'selected' : '' %>>8 (VIII)</option>
             </select>
           </div>
 
           <div class="mb-3">
             <label for="prasyarat" class="form-label">Kelas Prasyarat</label>
             <select class="form-select" id="prasyarat" name="prasyarat">
-              <option value="">None (No Prerequisite)</option>
+              <option value="" <%= (!mk.prasyarat || mk.prasyarat === '') ? 'selected' : '' %>>None (No Prerequisite)</option>
               <option value="" disabled>Pilih Mata Kuliah Prasyarat (Opsional)</option>
               <% if (prerequisites && prerequisites.length > 0) { %>
                 <% prerequisites.forEach(prereq => { %>
                   <option value="<%= prereq.kode_mk %>" 
-                    <%= (typeof selectedPrereq !== 'undefined' && selectedPrereq === prereq.kode_mk) ? 'selected' : '' %>>
+                    <%= (mk.prasyarat && mk.prasyarat === prereq.kode_mk) ? 'selected' : '' %>>
                     <%= prereq.kode_mk %> - <%= prereq.nama_mk %>
                   </option>
                 <% }); %>
@@ -103,8 +97,8 @@
           </div>
 
           <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <a href="/mk" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-warning">Update</button>
+            <a href="/mk/daftar" class="btn btn-secondary">Cancel</a>
           </div>
         </form>
       </div>
@@ -117,11 +111,14 @@
     const semesterSelect = document.getElementById('semester');
     const prasyaratSelect = document.getElementById('prasyarat');
     
+    // Store initially selected prerequisite
+    const initialSelectedPrereq = prasyaratSelect.value;
+    
     semesterSelect.addEventListener('change', function() {
       const semester = this.value;
       
       // Fetch prerequisites for the selected semester
-      fetch(`/mk/prerequisites/${semester}`)
+      fetch(`/mk/daftar/prerequisites/${semester}`)
         .then(response => response.json())
         .then(data => {
           // Clear current options
@@ -150,11 +147,17 @@
             return;
           }
           
-          // Add prerequisites as options
+          // Add prerequisites as options and restore selection if possible
           data.prerequisites.forEach(prereq => {
             const option = document.createElement('option');
             option.value = prereq.kode_mk;
             option.textContent = `${prereq.kode_mk} - ${prereq.nama_mk}`;
+            
+            // Restore selection if this was previously selected
+            if (initialSelectedPrereq === prereq.kode_mk) {
+              option.selected = true;
+            }
+            
             prasyaratSelect.appendChild(option);
           });
         })
@@ -165,4 +168,4 @@
   });
 </script>
 
-<%- contentFor('title') %> Add Mata Kuliah
+<%- contentFor('title') %> Edit Mata Kuliah

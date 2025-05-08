@@ -3,8 +3,10 @@
     <h2>Mata Kuliah (MK)</h2>
   </div>
   <div class="col text-end">
-    <a href="/mk/form" class="btn btn-primary me-2">Add New Mata Kuliah</a>
-    <a href="/mk/visualization" class="btn btn-info text-white"
+    <a href="/mk/daftar/form" class="btn btn-primary me-2"
+      >Add New Mata Kuliah</a
+    >
+    <a href="/mk/daftar/visualization" class="btn btn-info text-white"
       >Visualisasi MK</a
     >
   </div>
@@ -53,11 +55,13 @@
       <td class="text-center"><%= mk.semester_roman %></td>
       <td><%= mk.prasyarat || '-' %></td>
       <td>
-        <a href="/mk/edit/<%= mk.id %>" class="btn btn-sm btn-warning me-2"
+        <a
+          href="/mk/daftar/edit/<%= mk.id %>"
+          class="btn btn-sm btn-warning me-2"
           >Edit</a
         >
         <a
-          href="/mk/delete/<%= mk.id %>"
+          href="/mk/daftar/delete/<%= mk.id %>"
           class="btn btn-sm btn-danger"
           onclick="return confirm('Are you sure you want to delete this Mata Kuliah?')"
           >Delete</a

@@ -1,5 +1,5 @@
 const MkBkMappingModel = require("../models/mkBkMappingModel");
-const MkModel = require("../models/mkModel");
+const MkModel = require("../models/mk-model");
 const BkModel = require("../models/bk-model");
 
 exports.renderMappingTable = (req, res) => {

@@ -1,5 +1,5 @@
 const MkCplMappingModel = require("../models/mkCplMappingModel");
-const MkModel = require("../models/mkModel");
+const MkModel = require("../models/mk-model");
 const CplModel = require("../models/cpl-model");
 
 exports.renderMappingTable = (req, res) => {

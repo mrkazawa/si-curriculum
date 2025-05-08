@@ -3,9 +3,9 @@ const daftarCplRoutes = require("./cpl/daftar-cpl-routes");
 const daftarCpmkRoutes = require("./cpmk/daftar-cpmk-routes");
 const daftarPlRoutes = require("./pl/daftar-pl-routes");
 const daftarBkRoutes = require("./bk/daftar-bk-routes");
+const daftarMkRoutes = require("./mk/daftar-mk-routes");
 const cplPlMappingRoutes = require("./cpl/cpl-pl-mapping-routes");
 const bkCplMappingRoutes = require("./bk/bk-cpl-mapping-routes");
-const mkRoutes = require("./mkRoutes");
 const mkBkMappingRoutes = require("./mkBkMappingRoutes");
 const mkCplMappingRoutes = require("./mkCplMappingRoutes");
 const bkCplMkMappingRoutes = require("./bkCplMkMappingRoutes");
@@ -44,8 +44,8 @@ const setRoutes = (app) => {
   // Use the BK-CPL mapping routes with updated path structure
   app.use("/bk/bk-cpl-mapping", bkCplMappingRoutes);
 
-  // Use the MK routes
-  app.use("/mk", mkRoutes);
+  // Use the new MK routes with updated path structure
+  app.use("/mk/daftar", daftarMkRoutes);
 
   // Use the MK-BK mapping routes
   app.use("/mk-bk-mapping", mkBkMappingRoutes);

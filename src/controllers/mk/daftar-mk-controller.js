@@ -1,4 +1,5 @@
-const MkModel = require("../models/mkModel");
+// filepath: c:\Users\mrkazawa\my-codes\si-curriculum\src\controllers\mk\daftar-mk-controller.js
+const MkModel = require("../../models/mk-model");
 
 // Helper function to convert number to Roman numeral
 const toRoman = (num) => {
@@ -35,7 +36,7 @@ exports.renderForm = (req, res) => {
       return res.status(500).send("Error fetching prerequisites");
     }
 
-    res.render("mk/create", {
+    res.render("mk/daftar/create", {
       prerequisites: prerequisites,
       selectedPrereq: [],
       selectedSemester: semesterDefault,
@@ -75,7 +76,7 @@ exports.renderTable = (req, res) => {
       semester_roman: toRoman(mk.semester),
     }));
 
-    res.render("mk/index", { mataKuliah });
+    res.render("mk/daftar/index", { mataKuliah });
   });
 };
 
@@ -95,7 +96,7 @@ exports.createMK = (req, res) => {
   if (!kode_mk || !nama_mk || !kompetensi || !jenis_mk || !sks || !semester) {
     return renderFormWithError(
       res,
-      "mk/create",
+      "mk/daftar/create",
       "All fields except prerequisites are required",
       {
         kode_mk,
@@ -114,7 +115,7 @@ exports.createMK = (req, res) => {
   if (isNaN(semesterNum) || semesterNum < 1 || semesterNum > 8) {
     return renderFormWithError(
       res,
-      "mk/create",
+      "mk/daftar/create",
       "Semester must be a number between 1 and 8",
       { kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
     );
@@ -125,7 +126,7 @@ exports.createMK = (req, res) => {
   if (isNaN(sksNum) || sksNum <= 0) {
     return renderFormWithError(
       res,
-      "mk/create",
+      "mk/daftar/create",
       "SKS must be a positive number",
       { kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
     );
@@ -148,14 +149,14 @@ exports.createMK = (req, res) => {
         if (err.code === "ER_DUP_ENTRY") {
           return renderFormWithError(
             res,
-            "mk/create",
+            "mk/daftar/create",
             "Kode MK already exists. Please use a unique code.",
             { kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
           );
         }
         return res.status(500).send("Error creating MK: " + err.message);
       }
-      res.redirect("/mk");
+      res.redirect("/mk/daftar");
     }
   );
 };
@@ -169,7 +170,7 @@ exports.deleteMK = (req, res) => {
       console.error("Error deleting MK:", err);
       return res.status(500).send("Error deleting MK");
     }
-    res.redirect("/mk");
+    res.redirect("/mk/daftar");
   });
 };
 
@@ -198,7 +199,7 @@ exports.renderEditForm = (req, res) => {
         return res.status(500).send("Error fetching prerequisites");
       }
 
-      res.render("mk/edit", {
+      res.render("mk/daftar/edit", {
         mk: mk,
         prerequisites: prerequisites,
         selectedPrereq: selectedPrereq,
@@ -225,7 +226,7 @@ exports.updateMK = (req, res) => {
   if (!kode_mk || !nama_mk || !kompetensi || !jenis_mk || !sks || !semester) {
     return renderFormWithError(
       res,
-      "mk/edit",
+      "mk/daftar/edit",
       "All fields except prerequisites are required",
       {
         id,
@@ -245,7 +246,7 @@ exports.updateMK = (req, res) => {
   if (isNaN(semesterNum) || semesterNum < 1 || semesterNum > 8) {
     return renderFormWithError(
       res,
-      "mk/edit",
+      "mk/daftar/edit",
       "Semester must be a number between 1 and 8",
       { id, kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
     );
@@ -256,7 +257,7 @@ exports.updateMK = (req, res) => {
   if (isNaN(sksNum) || sksNum <= 0) {
     return renderFormWithError(
       res,
-      "mk/edit",
+      "mk/daftar/edit",
       "SKS must be a positive number",
       { id, kode_mk, nama_mk, kompetensi, jenis_mk, sks, semester, prasyarat }
     );
@@ -280,7 +281,7 @@ exports.updateMK = (req, res) => {
         if (err.code === "ER_DUP_ENTRY") {
           return renderFormWithError(
             res,
-            "mk/edit",
+            "mk/daftar/edit",
             "Kode MK already exists. Please use a unique code.",
             {
               id,
@@ -296,7 +297,7 @@ exports.updateMK = (req, res) => {
         }
         return res.status(500).send("Error updating MK: " + err.message);
       }
-      res.redirect("/mk");
+      res.redirect("/mk/daftar");
     }
   );
 };
