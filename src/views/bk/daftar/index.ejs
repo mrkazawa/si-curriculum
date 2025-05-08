@@ -3,12 +3,12 @@
     <h2>Bahan Kajian (BK)</h2>
   </div>
   <div class="col text-end">
-    <a href="/bk/daftar/form" class="btn btn-primary">Add New Bahan Kajian</a>
+    <a href="/bk/daftar/form" class="btn btn-primary">Add New BK</a>
   </div>
 </div>
 
 <table class="table table-bordered table-striped">
-  <thead class="table-dark">
+  <thead class="table-info align-top">
     <tr>
       <th>No</th>
       <th>Kode BK</th>
@@ -16,10 +16,10 @@
       <th>Deskripsi</th>
       <th>Kompetensi</th>
       <th>Referensi</th>
-      <th>Actions</th>
+      <th style="width: 130px">Actions</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="table-group-divider">
     <% if (bahanKajians && bahanKajians.length > 0) { %> <%
     bahanKajians.forEach((bk, index) => { %>
     <tr>
