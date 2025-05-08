@@ -1,0 +1,299 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Mapping MK-CPL</h2>
+    <p class="text-muted">
+      Pemetaan antara Mata Kuliah dan Capaian Pembelajaran Lulusan
+    </p>
+  </div>
+  <div class="col-auto">
+    <button id="edit-toggle-btn" class="btn btn-warning">
+      <i class="fas fa-edit"></i> Edit
+    </button>
+  </div>
+</div>
+
+<style>
+  /* CSS for fixed/frozen columns */
+  .table-responsive {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .freeze-column-1,
+  .freeze-column-2 {
+    position: sticky;
+    background-color: white;
+    z-index: 1;
+  }
+
+  .freeze-column-1 {
+    left: 0;
+    z-index: 2;
+  }
+
+  .freeze-column-2 {
+    left: calc(var(--column-1-width));
+    z-index: 2;
+  }
+
+  /* Disable default browser tooltips */
+  .cpl-cell[data-tooltip-content] {
+    title: none;
+  }
+
+  /* Add shadow effect to show depth */
+  .freeze-column-2::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -5px;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  }
+
+  /* Style for the header cells */
+  thead .freeze-column-1,
+  thead .freeze-column-2 {
+    background-color: #cff4fc; /* Match bootstrap table-info class */
+  }
+
+  /* Style for CPL descriptions */
+  .cpl-header small {
+    font-weight: normal;
+  }
+</style>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead class="table-info">
+      <tr>
+        <th
+          rowspan="2"
+          class="align-middle freeze-column-1"
+          style="min-width: 60px"
+        >
+          Kode MK
+        </th>
+        <th
+          rowspan="2"
+          class="align-middle freeze-column-2"
+          style="min-width: 200px"
+        >
+          Mata Kuliah
+        </th>
+        <th colspan="<%= cpls.length %>" class="text-center">
+          Capaian Pembelajaran Lulusan (CPL)
+        </th>
+      </tr>
+      <tr>
+        <% if (cpls && cpls.length > 0) { %> <% cpls.forEach(cpl => { %>
+        <th
+          class="text-center align-top cpl-header"
+          style="vertical-align: top; min-width: 250px"
+          data-cpl-code="<%= cpl.kode_cpl %>"
+          data-cpl-desc="<%= cpl.deskripsi %>"
+        >
+          <%= cpl.kode_cpl %><br />
+          <small><i><%= cpl.deskripsi %></i></small>
+        </th>
+        <% }) %> <% } %>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+      <% if (mks && mks.length > 0) { %> <% mks.forEach((mk, index) => { %>
+      <tr>
+        <td class="freeze-column-1"><%= mk.kode_mk %></td>
+        <td class="freeze-column-2"><%= mk.nama_mk %></td>
+        <% cpls.forEach(cpl => { %>
+        <td
+          class="text-center cpl-cell"
+          data-cpl-code="<%= cpl.kode_cpl %>"
+          data-toggle="tooltip"
+          title="<%= cpl.kode_cpl %>: <%= cpl.deskripsi %>"
+        >
+          <% const isChecked = mkMappings[mk.kode_mk] &&
+          mkMappings[mk.kode_mk].includes(cpl.kode_cpl); %>
+          <div class="view-mode">
+            <% if (isChecked) { %>
+            <span class="text-success">✔</span>
+            <% } %>
+          </div>
+          <div class="edit-mode" style="display: none">
+            <input type="checkbox" class="mapping-checkbox form-check-input"
+            data-mk="<%= mk.kode_mk %>" data-cpl="<%= cpl.kode_cpl %>" <%=
+            isChecked ? 'checked' : '' %> />
+          </div>
+        </td>
+        <% }) %>
+      </tr>
+      <% }) %> <% } else { %>
+      <tr>
+        <td colspan="<%= 2 + cpls.length %>" class="text-center">
+          No Mata Kuliah available
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Get all elements we need to interact with
+    const editToggleBtn = document.getElementById("edit-toggle-btn");
+    const viewModes = document.querySelectorAll(".view-mode");
+    const editModes = document.querySelectorAll(".edit-mode");
+    const checkboxes = document.querySelectorAll(".mapping-checkbox");
+
+    // Set CSS variable for the width of the first column
+    const column1Width = document.querySelector(".freeze-column-1").offsetWidth;
+    document.documentElement.style.setProperty(
+      "--column-1-width",
+      column1Width + "px"
+    );
+
+    // Prevent default browser tooltips by moving title to data attribute
+    document.querySelectorAll(".cpl-cell").forEach((cell) => {
+      const titleContent = cell.getAttribute("title");
+      if (titleContent) {
+        cell.setAttribute("data-tooltip-content", titleContent);
+        cell.removeAttribute("title");
+      }
+    });
+
+    // Initialize tooltips if Bootstrap's tooltip is available
+    if (typeof $ !== "undefined" && $.fn.tooltip) {
+      $('[data-toggle="tooltip"]').tooltip({
+        container: "body",
+        html: true,
+        title: function () {
+          return $(this).attr("data-tooltip-content");
+        },
+      });
+    } else {
+      // Fallback for tooltip implementation if jQuery/Bootstrap is not available
+      const cplCells = document.querySelectorAll(".cpl-cell");
+      cplCells.forEach((cell) => {
+        const title = cell.getAttribute("data-tooltip-content");
+
+        cell.addEventListener("mouseenter", function () {
+          const tooltip = document.createElement("div");
+          tooltip.className = "custom-tooltip";
+          tooltip.innerHTML = title;
+          tooltip.style.position = "absolute";
+          tooltip.style.backgroundColor = "#000";
+          tooltip.style.color = "#fff";
+          tooltip.style.padding = "5px 10px";
+          tooltip.style.borderRadius = "4px";
+          tooltip.style.fontSize = "14px";
+          tooltip.style.zIndex = "1000";
+          tooltip.style.maxWidth = "300px";
+
+          document.body.appendChild(tooltip);
+
+          const rect = cell.getBoundingClientRect();
+          tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+          tooltip.style.left = `${rect.left + window.scrollX}px`;
+
+          cell.tooltip = tooltip;
+        });
+
+        cell.addEventListener("mouseleave", function () {
+          if (cell.tooltip) {
+            document.body.removeChild(cell.tooltip);
+            cell.tooltip = null;
+          }
+        });
+      });
+    }
+
+    // We start in view mode
+    let editMode = false;
+
+    // Function to toggle between view and edit modes
+    function toggleEditMode() {
+      editMode = !editMode;
+
+      viewModes.forEach((elem) => {
+        elem.style.display = editMode ? "none" : "block";
+      });
+
+      editModes.forEach((elem) => {
+        elem.style.display = editMode ? "block" : "none";
+      });
+
+      // Update button text
+      if (editMode) {
+        editToggleBtn.innerHTML = '<i class="fas fa-check"></i> Done';
+        editToggleBtn.classList.replace("btn-warning", "btn-success");
+      } else {
+        editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+        editToggleBtn.classList.replace("btn-success", "btn-warning");
+      }
+    }
+
+    // Add event listener for the edit toggle button
+    editToggleBtn.addEventListener("click", toggleEditMode);
+
+    // Handle checkbox changes - mapping/unmapping
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", function () {
+        const kodeMk = this.dataset.mk;
+        const kodeCpl = this.dataset.cpl;
+        const isChecked = this.checked;
+
+        // Find the corresponding view mode element
+        const tdCell = this.closest("td");
+        const viewModeElement = tdCell.querySelector(".view-mode");
+
+        // Disable checkbox during update to prevent multiple clicks
+        this.disabled = true;
+
+        // Send the update to the server
+        fetch("/mk/mk-cpl-mapping/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            kode_mk: kodeMk,
+            kode_cpl: kodeCpl,
+            isChecked: isChecked.toString(),
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Re-enable checkbox after successful update
+              this.disabled = false;
+
+              // Update the view mode element to reflect the new checkbox state
+              if (isChecked) {
+                viewModeElement.innerHTML =
+                  '<span class="text-success">✔</span>';
+              } else {
+                viewModeElement.innerHTML = "";
+              }
+            } else {
+              // If there was an error, revert the checkbox
+              this.checked = !isChecked;
+              this.disabled = false;
+              alert(
+                "Error updating mapping: " + (data.message || "Unknown error")
+              );
+            }
+          })
+          .catch((error) => {
+            // Handle network or other errors
+            console.error("Error:", error);
+            this.checked = !isChecked;
+            this.disabled = false;
+            alert("Error updating mapping: Network error");
+          });
+      });
+    });
+  });
+</script>
+
+<%- contentFor('title') %> MK-CPL Mapping

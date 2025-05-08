@@ -1,6 +1,6 @@
-const MkCplMappingModel = require("../models/mkCplMappingModel");
-const MkModel = require("../models/mk-model");
-const CplModel = require("../models/cpl-model");
+const MkCplMappingModel = require("../../models/mk-cpl-mapping-model");
+const MkModel = require("../../models/mk-model");
+const CplModel = require("../../models/cpl-model");
 
 exports.renderMappingTable = (req, res) => {
   // Get all MKs
@@ -33,7 +33,7 @@ exports.renderMappingTable = (req, res) => {
           mkMappings[mapping.kode_mk] = mappedCPLs;
         });
 
-        res.render("mk-cpl-mapping/index", {
+        res.render("mk/mk-cpl-mapping/index", {
           mks: mks,
           cpls: cpls,
           mkMappings: mkMappings,
