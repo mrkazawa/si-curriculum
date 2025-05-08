@@ -12,19 +12,88 @@
   </div>
 </div>
 
+<style>
+  /* CSS for fixed/frozen columns */
+  .table-responsive {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .freeze-column-1,
+  .freeze-column-2 {
+    position: sticky;
+    background-color: white;
+    z-index: 1;
+  }
+
+  .freeze-column-1 {
+    left: 0;
+    z-index: 2;
+  }
+
+  .freeze-column-2 {
+    left: calc(var(--column-1-width));
+    z-index: 2;
+  }
+
+  /* Disable default browser tooltips */
+  .cpl-cell[data-tooltip-content] {
+    title: none;
+  }
+
+  /* Add shadow effect to show depth */
+  .freeze-column-2::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -5px;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  }
+
+  /* Style for the header cells */
+  thead .freeze-column-1,
+  thead .freeze-column-2 {
+    background-color: #cff4fc; /* Match bootstrap table-info class */
+  }
+
+  /* Style for CPL descriptions */
+  .cpl-header small {
+    font-weight: normal;
+  }
+</style>
+
 <div class="table-responsive">
   <table class="table table-bordered table-striped">
-    <thead class="table-light">
+    <thead class="table-info">
       <tr>
-        <th rowspan="2" class="align-middle">Kode BK</th>
-        <th rowspan="2" class="align-middle">Bahan Kajian</th>
+        <th
+          rowspan="2"
+          class="align-middle freeze-column-1"
+          style="min-width: 60px"
+        >
+          Kode BK
+        </th>
+        <th
+          rowspan="2"
+          class="align-middle freeze-column-2"
+          style="min-width: 200px"
+        >
+          Bahan Kajian
+        </th>
         <th colspan="<%= cpls.length %>" class="text-center">
           Capaian Pembelajaran Lulusan (CPL)
         </th>
       </tr>
       <tr>
         <% if (cpls && cpls.length > 0) { %> <% cpls.forEach(cpl => { %>
-        <th class="text-center align-top" style="vertical-align: top">
+        <th
+          class="text-center align-top cpl-header"
+          style="vertical-align: top; min-width: 250px"
+          data-cpl-code="<%= cpl.kode_cpl %>"
+          data-cpl-desc="<%= cpl.deskripsi %>"
+        >
           <%= cpl.kode_cpl %><br />
           <small><i><%= cpl.deskripsi %></i></small>
         </th>
@@ -34,10 +103,15 @@
     <tbody class="table-group-divider">
       <% if (bks && bks.length > 0) { %> <% bks.forEach((bk, index) => { %>
       <tr>
-        <td><%= bk.kode_bk %></td>
-        <td><%= bk.bahan_kajian %></td>
+        <td class="freeze-column-1"><%= bk.kode_bk %></td>
+        <td class="freeze-column-2"><%= bk.bahan_kajian %></td>
         <% cpls.forEach(cpl => { %>
-        <td class="text-center">
+        <td
+          class="text-center cpl-cell"
+          data-cpl-code="<%= cpl.kode_cpl %>"
+          data-toggle="tooltip"
+          title="<%= cpl.kode_cpl %>: <%= cpl.deskripsi %>"
+        >
           <% const isChecked = bkMappings[bk.kode_bk] &&
           bkMappings[bk.kode_bk].includes(cpl.kode_cpl); %>
           <div class="view-mode">
@@ -71,6 +145,68 @@
     const viewModes = document.querySelectorAll(".view-mode");
     const editModes = document.querySelectorAll(".edit-mode");
     const checkboxes = document.querySelectorAll(".mapping-checkbox");
+
+    // Set CSS variable for the width of the first column
+    const column1Width = document.querySelector(".freeze-column-1").offsetWidth;
+    document.documentElement.style.setProperty(
+      "--column-1-width",
+      column1Width + "px"
+    );
+
+    // Prevent default browser tooltips by moving title to data attribute
+    document.querySelectorAll(".cpl-cell").forEach((cell) => {
+      const titleContent = cell.getAttribute("title");
+      if (titleContent) {
+        cell.setAttribute("data-tooltip-content", titleContent);
+        cell.removeAttribute("title");
+      }
+    });
+
+    // Initialize tooltips if Bootstrap's tooltip is available
+    if (typeof $ !== "undefined" && $.fn.tooltip) {
+      $('[data-toggle="tooltip"]').tooltip({
+        container: "body",
+        html: true,
+        title: function () {
+          return $(this).attr("data-tooltip-content");
+        },
+      });
+    } else {
+      // Fallback for tooltip implementation if jQuery/Bootstrap is not available
+      const cplCells = document.querySelectorAll(".cpl-cell");
+      cplCells.forEach((cell) => {
+        const title = cell.getAttribute("data-tooltip-content");
+
+        cell.addEventListener("mouseenter", function () {
+          const tooltip = document.createElement("div");
+          tooltip.className = "custom-tooltip";
+          tooltip.innerHTML = title;
+          tooltip.style.position = "absolute";
+          tooltip.style.backgroundColor = "#000";
+          tooltip.style.color = "#fff";
+          tooltip.style.padding = "5px 10px";
+          tooltip.style.borderRadius = "4px";
+          tooltip.style.fontSize = "14px";
+          tooltip.style.zIndex = "1000";
+          tooltip.style.maxWidth = "300px";
+
+          document.body.appendChild(tooltip);
+
+          const rect = cell.getBoundingClientRect();
+          tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+          tooltip.style.left = `${rect.left + window.scrollX}px`;
+
+          cell.tooltip = tooltip;
+        });
+
+        cell.addEventListener("mouseleave", function () {
+          if (cell.tooltip) {
+            document.body.removeChild(cell.tooltip);
+            cell.tooltip = null;
+          }
+        });
+      });
+    }
 
     // We start in view mode
     let editMode = false;
