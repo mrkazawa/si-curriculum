@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const mkBkMappingController = require("../controllers/mkBkMappingController");
+const mkBkMappingController = require("../../controllers/mk/mk-bk-mapping-controller");
 
 // Mapping routes
 router.get("/", mkBkMappingController.renderMappingTable);

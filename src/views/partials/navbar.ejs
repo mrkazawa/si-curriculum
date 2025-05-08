@@ -93,11 +93,16 @@
                 >Visualisasi MK</a
               >
             </li>
+            <li>
+              <a class="dropdown-item" href="/mk/mk-bk-mapping"
+                >MK-BK Mapping</a
+              >
+            </li>
           </ul>
         </li>
         <li class="nav-item dropdown">
           <a
-            class="nav-link dropdown-toggle <%= path === '/mk-bk-mapping' || path === '/mk-cpl-mapping' || path === '/bk-cpl-mk-mapping' || path === '/cpl-semester-mk-mapping' ? 'active' : '' %>"
+            class="nav-link dropdown-toggle <%= path === '/mk-cpl-mapping' || path === '/bk-cpl-mk-mapping' || path === '/cpl-semester-mk-mapping' ? 'active' : '' %>"
             href="#"
             id="mappingDropdown"
             role="button"
@@ -107,9 +112,6 @@
             Mapping
           </a>
           <ul class="dropdown-menu" aria-labelledby="mappingDropdown">
-            <li>
-              <a class="dropdown-item" href="/mk-bk-mapping"> MK-BK </a>
-            </li>
             <li>
               <a class="dropdown-item" href="/mk-cpl-mapping"> MK-CPL </a>
             </li>

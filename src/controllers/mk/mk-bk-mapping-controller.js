@@ -1,6 +1,6 @@
-const MkBkMappingModel = require("../models/mkBkMappingModel");
-const MkModel = require("../models/mk-model");
-const BkModel = require("../models/bk-model");
+const MkBkMappingModel = require("../../models/mk-bk-mapping-model");
+const MkModel = require("../../models/mk-model");
+const BkModel = require("../../models/bk-model");
 
 exports.renderMappingTable = (req, res) => {
   // Get all MKs
@@ -33,7 +33,7 @@ exports.renderMappingTable = (req, res) => {
           mkMappings[mapping.kode_mk] = mappedBKs;
         });
 
-        res.render("mk-bk-mapping/index", {
+        res.render("mk/mk-bk-mapping/index", {
           mks: mks,
           bks: bks,
           mkMappings: mkMappings,
