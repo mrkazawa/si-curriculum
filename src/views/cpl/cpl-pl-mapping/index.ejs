@@ -178,40 +178,52 @@
           return $(this).attr("data-tooltip-content");
         },
       });
+
+      // Only enable tooltips for cells that have values
+      $(".pl-cell").each(function () {
+        const hasValue =
+          $(this).find(".view-mode span.text-success").length > 0;
+        if (!hasValue) {
+          $(this).tooltip("disable");
+        }
+      });
     } else {
       // Fallback for tooltip implementation if jQuery/Bootstrap is not available
       const plCells = document.querySelectorAll(".pl-cell");
       plCells.forEach((cell) => {
         const title = cell.getAttribute("data-tooltip-content");
+        // Only add tooltip event listeners for cells with values (that have a check mark)
+        const hasValue = cell.querySelector(".view-mode span.text-success");
+        if (hasValue) {
+          cell.addEventListener("mouseenter", function () {
+            const tooltip = document.createElement("div");
+            tooltip.className = "custom-tooltip";
+            tooltip.innerHTML = title;
+            tooltip.style.position = "absolute";
+            tooltip.style.backgroundColor = "#000";
+            tooltip.style.color = "#fff";
+            tooltip.style.padding = "5px 10px";
+            tooltip.style.borderRadius = "4px";
+            tooltip.style.fontSize = "14px";
+            tooltip.style.zIndex = "1000";
+            tooltip.style.maxWidth = "300px";
 
-        cell.addEventListener("mouseenter", function () {
-          const tooltip = document.createElement("div");
-          tooltip.className = "custom-tooltip";
-          tooltip.innerHTML = title;
-          tooltip.style.position = "absolute";
-          tooltip.style.backgroundColor = "#000";
-          tooltip.style.color = "#fff";
-          tooltip.style.padding = "5px 10px";
-          tooltip.style.borderRadius = "4px";
-          tooltip.style.fontSize = "14px";
-          tooltip.style.zIndex = "1000";
-          tooltip.style.maxWidth = "300px";
+            document.body.appendChild(tooltip);
 
-          document.body.appendChild(tooltip);
+            const rect = cell.getBoundingClientRect();
+            tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+            tooltip.style.left = `${rect.left + window.scrollX}px`;
 
-          const rect = cell.getBoundingClientRect();
-          tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
-          tooltip.style.left = `${rect.left + window.scrollX}px`;
+            cell.tooltip = tooltip;
+          });
 
-          cell.tooltip = tooltip;
-        });
-
-        cell.addEventListener("mouseleave", function () {
-          if (cell.tooltip) {
-            document.body.removeChild(cell.tooltip);
-            cell.tooltip = null;
-          }
-        });
+          cell.addEventListener("mouseleave", function () {
+            if (cell.tooltip) {
+              document.body.removeChild(cell.tooltip);
+              cell.tooltip = null;
+            }
+          });
+        }
       });
     }
 

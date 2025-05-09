@@ -172,22 +172,43 @@
 
     // Initialize tooltips if Bootstrap's tooltip is available
     if (typeof $ !== "undefined" && $.fn.tooltip) {
-      $('[data-toggle="tooltip"]').tooltip({
+      // Apply tooltips to headers
+      $('.bk-header[data-toggle="tooltip"]').tooltip({
         container: "body",
         html: true,
         title: function () {
           return $(this).attr("data-tooltip-content") || $(this).attr("title");
         },
       });
+
+      // For cells, only enable tooltips for those with values
+      $(".bk-cell").each(function () {
+        const hasValue =
+          $(this).find(".view-mode span.text-success").length > 0;
+        if (hasValue) {
+          $(this).tooltip({
+            container: "body",
+            html: true,
+            title: function () {
+              return (
+                $(this).attr("data-tooltip-content") || $(this).attr("title")
+              );
+            },
+          });
+        } else {
+          $(this).removeAttr("data-toggle");
+        }
+      });
     } else {
       // Fallback for tooltip implementation if jQuery/Bootstrap is not available
-      const bkCells = document.querySelectorAll(".bk-cell");
-      bkCells.forEach((cell) => {
+      // For headers, always show tooltips
+      const bkHeaders = document.querySelectorAll(".bk-header");
+      bkHeaders.forEach((header) => {
         const title =
-          cell.getAttribute("data-tooltip-content") ||
-          cell.getAttribute("title");
+          header.getAttribute("data-tooltip-content") ||
+          header.getAttribute("title");
 
-        cell.addEventListener("mouseenter", function () {
+        header.addEventListener("mouseenter", function () {
           const tooltip = document.createElement("div");
           tooltip.className = "custom-tooltip";
           tooltip.innerHTML = title;
@@ -202,19 +223,59 @@
 
           document.body.appendChild(tooltip);
 
-          const rect = cell.getBoundingClientRect();
+          const rect = header.getBoundingClientRect();
           tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
           tooltip.style.left = `${rect.left + window.scrollX}px`;
 
-          cell.tooltip = tooltip;
+          header.tooltip = tooltip;
         });
 
-        cell.addEventListener("mouseleave", function () {
-          if (cell.tooltip) {
-            document.body.removeChild(cell.tooltip);
-            cell.tooltip = null;
+        header.addEventListener("mouseleave", function () {
+          if (header.tooltip) {
+            document.body.removeChild(header.tooltip);
+            header.tooltip = null;
           }
         });
+      });
+
+      // For cells, only show tooltips when they have values
+      const bkCells = document.querySelectorAll(".bk-cell");
+      bkCells.forEach((cell) => {
+        const hasValue = cell.querySelector(".view-mode span.text-success");
+        if (hasValue) {
+          const title =
+            cell.getAttribute("data-tooltip-content") ||
+            cell.getAttribute("title");
+
+          cell.addEventListener("mouseenter", function () {
+            const tooltip = document.createElement("div");
+            tooltip.className = "custom-tooltip";
+            tooltip.innerHTML = title;
+            tooltip.style.position = "absolute";
+            tooltip.style.backgroundColor = "#000";
+            tooltip.style.color = "#fff";
+            tooltip.style.padding = "5px 10px";
+            tooltip.style.borderRadius = "4px";
+            tooltip.style.fontSize = "14px";
+            tooltip.style.zIndex = "1000";
+            tooltip.style.maxWidth = "300px";
+
+            document.body.appendChild(tooltip);
+
+            const rect = cell.getBoundingClientRect();
+            tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+            tooltip.style.left = `${rect.left + window.scrollX}px`;
+
+            cell.tooltip = tooltip;
+          });
+
+          cell.addEventListener("mouseleave", function () {
+            if (cell.tooltip) {
+              document.body.removeChild(cell.tooltip);
+              cell.tooltip = null;
+            }
+          });
+        }
       });
     }
 

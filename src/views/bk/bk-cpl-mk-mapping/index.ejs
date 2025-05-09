@@ -186,16 +186,33 @@
 
     // Initialize tooltips if Bootstrap's tooltip is available
     if (typeof $ !== "undefined" && $.fn.tooltip) {
-      $('[data-toggle="tooltip"]').tooltip({
+      // Only apply tooltips to headers and cells with MK content
+      $(".cpl-header").tooltip({
         container: "body",
         html: true,
       });
+
+      // For cpl-mk-cells, only enable tooltips for those with MK items
+      $(".cpl-mk-cell").each(function () {
+        const hasMkItems = $(this).find(".mk-item").length > 0;
+        if (hasMkItems) {
+          $(this).tooltip({
+            container: "body",
+            html: true,
+          });
+        } else {
+          $(this).removeAttr("data-toggle");
+          $(this).removeAttr("title");
+          $(this).removeAttr("data-tooltip-content");
+        }
+      });
     } else {
       // Fallback for tooltip implementation if jQuery/Bootstrap is not available
-      const tooltipElements = document.querySelectorAll(
-        ".cpl-header, .cpl-mk-cell"
-      );
-      tooltipElements.forEach((cell) => {
+      const tooltipHeaders = document.querySelectorAll(".cpl-header");
+      const tooltipCells = document.querySelectorAll(".cpl-mk-cell");
+
+      // Always show tooltips for headers
+      tooltipHeaders.forEach((cell) => {
         const title =
           cell.getAttribute("data-tooltip-content") ||
           cell.getAttribute("data-cpl-code") +
@@ -210,20 +227,8 @@
           document.body.appendChild(tooltip);
 
           const rect = cell.getBoundingClientRect();
-
-          // Position differently based on whether it's a header or cell
-          if (cell.classList.contains("cpl-header")) {
-            tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
-            tooltip.style.left = `${rect.left + window.scrollX}px`;
-          } else {
-            // For table cells, show tooltip above the cursor to avoid blocking content
-            tooltip.style.top = `${
-              event.clientY + window.scrollY - tooltip.offsetHeight - 10
-            }px`;
-            tooltip.style.left = `${
-              event.clientX + window.scrollX - tooltip.offsetWidth / 2
-            }px`;
-          }
+          tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+          tooltip.style.left = `${rect.left + window.scrollX}px`;
 
           cell.tooltip = tooltip;
         });
@@ -234,6 +239,45 @@
             cell.tooltip = null;
           }
         });
+      });
+
+      // Only show tooltips for cells with MK items
+      tooltipCells.forEach((cell) => {
+        const mkItems = cell.querySelectorAll(".mk-item");
+        if (mkItems.length > 0) {
+          const title =
+            cell.getAttribute("data-tooltip-content") ||
+            cell.getAttribute("data-cpl-code") +
+              ": " +
+              cell.getAttribute("data-cpl-desc");
+
+          cell.addEventListener("mouseenter", function (event) {
+            const tooltip = document.createElement("div");
+            tooltip.className = "custom-tooltip";
+            tooltip.innerHTML = title;
+
+            document.body.appendChild(tooltip);
+
+            const rect = cell.getBoundingClientRect();
+
+            // For table cells, show tooltip above the cursor to avoid blocking content
+            tooltip.style.top = `${
+              event.clientY + window.scrollY - tooltip.offsetHeight - 10
+            }px`;
+            tooltip.style.left = `${
+              event.clientX + window.scrollX - tooltip.offsetWidth / 2
+            }px`;
+
+            cell.tooltip = tooltip;
+          });
+
+          cell.addEventListener("mouseleave", function () {
+            if (cell.tooltip) {
+              document.body.removeChild(cell.tooltip);
+              cell.tooltip = null;
+            }
+          });
+        }
       });
     }
   });
