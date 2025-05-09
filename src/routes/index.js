@@ -10,6 +10,7 @@ const bkCplMappingRoutes = require("./bk/bk-cpl-mapping-routes");
 const bkCplMkMappingRoutes = require("./bk/bk-cpl-mk-mapping-routes");
 const mkBkMappingRoutes = require("./mk/mk-bk-mapping-routes");
 const mkCplMappingRoutes = require("./mk/mk-cpl-mapping-routes");
+const mkCpmkMappingRoutes = require("./mk/mk-cpmk-mapping-routes");
 
 // Import models for dashboard
 const PlModel = require("../models/pl-model");
@@ -118,6 +119,9 @@ const setRoutes = (app) => {
 
   // Use the MK-CPL mapping routes with updated path structure
   app.use("/mk/mk-cpl-mapping", mkCplMappingRoutes);
+
+  // Use the MK-CPMK mapping routes with updated path structure
+  app.use("/mk/mk-cpmk-mapping", mkCpmkMappingRoutes);
 
   // Legacy route for backwards compatibility - should redirect to the new path
   app.use("/cpl-semester-mk-mapping", (req, res) => {
