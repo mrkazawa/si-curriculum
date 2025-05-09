@@ -20,6 +20,26 @@
     background-color: #cff4fc; /* Match bootstrap table-info class */
   }
 
+  /* Custom striping styles for CPL rows */
+  tr.cpl-row-even,
+  tr.cpl-row-even td {
+    background-color: #f2f2f2; /* Gray background for even CPLs */
+  }
+
+  tr.cpl-row-odd,
+  tr.cpl-row-odd td {
+    background-color: #fff; /* White background for odd CPLs */
+  }
+
+  /* Remove default table-striped behavior */
+  .table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: transparent;
+  }
+
+  .table-striped > tbody > tr:nth-of-type(even) > * {
+    --bs-table-accent-bg: transparent;
+  }
+
   /* Style for MK codes */
   .mk-list {
     font-size: 0.9em;
@@ -66,11 +86,11 @@
 </style>
 
 <div class="table-responsive">
-  <table class="table table-bordered table-striped">
+  <table class="table table-bordered">
     <thead class="table-info">
       <tr>
         <th class="align-middle" style="min-width: 60px">Kode CPL</th>
-        <th class="align-middle" style="min-width: 200px">Deskripsi CPL</th>
+        <th class="align-middle" style="width: 500px">Deskripsi CPL</th>
         <th class="align-middle" style="min-width: 80px">Kode CPMK</th>
         <th class="align-middle" style="min-width: 200px">Deskripsi CPMK</th>
         <th class="align-middle" style="min-width: 250px">Mata Kuliah</th>
@@ -82,7 +102,7 @@
       Object.entries(mappingLookup[cpl.kode_cpl]); %> <% if (cpmkEntries.length
       > 0) { %> <% let isFirstCpmk = true; %> <%
       cpmkEntries.forEach(([kode_cpmk, data], cpmkIndex) => { %>
-      <tr>
+      <tr class="<%= index % 2 === 0 ? 'cpl-row-even' : 'cpl-row-odd' %>">
         <% if (isFirstCpmk) { %>
         <td rowspan="<%= cpmkEntries.length %>"><%= cpl.kode_cpl %></td>
         <td rowspan="<%= cpmkEntries.length %>"><%= cpl.deskripsi %></td>
@@ -104,13 +124,13 @@
         </td>
       </tr>
       <% }); %> <% } else { %>
-      <tr>
+      <tr class="<%= index % 2 === 0 ? 'cpl-row-even' : 'cpl-row-odd' %>">
         <td><%= cpl.kode_cpl %></td>
         <td><%= cpl.deskripsi %></td>
         <td colspan="3" class="no-data">No CPMKs available for this CPL</td>
       </tr>
       <% } %> <% } else { %>
-      <tr>
+      <tr class="<%= index % 2 === 0 ? 'cpl-row-even' : 'cpl-row-odd' %>">
         <td><%= cpl.kode_cpl %></td>
         <td><%= cpl.deskripsi %></td>
         <td colspan="3" class="no-data">No data available</td>
