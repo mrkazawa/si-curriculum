@@ -24,15 +24,27 @@ exports.renderMappingTable = (req, res) => {
       cpls.forEach((cpl) => {
         mappingLookup[cpl.kode_cpl] = {};
         semesters.forEach((sem) => {
-          mappingLookup[cpl.kode_cpl][sem] = "";
+          mappingLookup[cpl.kode_cpl][sem] = [];
         });
       });
 
       // Fill in the mapping data
       mappings.forEach((mapping) => {
-        if (mapping.kode_cpl && mapping.semester) {
-          mappingLookup[mapping.kode_cpl][mapping.semester] =
-            mapping.kode_mks || "";
+        if (mapping.kode_cpl && mapping.semester && mapping.mk_data) {
+          // Process the mk_data string into an array of objects
+          const mkList = [];
+          const mkDataItems = mapping.mk_data.split("||");
+
+          mkDataItems.forEach((item) => {
+            if (item) {
+              const [kode_mk, nama_mk] = item.split(":");
+              if (kode_mk && nama_mk) {
+                mkList.push({ kode_mk, nama_mk });
+              }
+            }
+          });
+
+          mappingLookup[mapping.kode_cpl][mapping.semester] = mkList;
         }
       });
 

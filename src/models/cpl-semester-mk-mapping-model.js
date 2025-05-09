@@ -18,7 +18,10 @@ const CplSemesterMkMappingModel = {
       SELECT 
         cpl.kode_cpl, 
         mk.semester,
-        GROUP_CONCAT(mk.kode_mk ORDER BY mk.kode_mk SEPARATOR ', ') AS kode_mks
+        GROUP_CONCAT(
+          CONCAT(mk.kode_mk, ':', mk.nama_mk)
+          ORDER BY mk.kode_mk SEPARATOR '||'
+        ) AS mk_data
       FROM 
         capaian_pembelajaran_lulusan cpl
       LEFT JOIN 
