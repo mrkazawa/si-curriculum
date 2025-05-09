@@ -2,6 +2,39 @@
   <div class="text-center py-5">
     <h1 class="display-4 mb-4"><%= message %></h1>
     <p class="lead mb-4">Manage your curriculum data efficiently</p>
+
+    <!-- Document links section -->
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Important Documents</h5>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">SI APTIKOM 2024</h5>
+            <p class="card-text">
+              View and download the SI APTIKOM 2024 document.
+            </p>
+            <div class="d-flex gap-2">
+              <a
+                href="/documents/si-aptikom-2024.pdf"
+                target="_blank"
+                class="btn btn-primary"
+              >
+                <i class="fas fa-eye"></i> View PDF
+              </a>
+              <a
+                href="/documents/si-aptikom-2024.pdf"
+                download
+                class="btn btn-outline-primary"
+              >
+                <i class="fas fa-download"></i> Download
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -11,7 +44,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 80vh;
+    min-height: 80vh;
     text-align: center;
     padding: 20px;
   }

@@ -1,6 +1,23 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav
+  class="navbar navbar-expand-lg navbar-light bg-light"
+  style="
+    border-bottom: 1px solid #a1a1a1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  "
+>
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">Curriculum App</a>
+    <a
+      class="navbar-brand d-flex align-items-center py-0 my-0"
+      href="/"
+      style="height: 100%"
+    >
+      <img
+        src="/images/logo-obe.png"
+        alt="OBE Logo"
+        class="d-inline-block"
+        style="height: 40px; max-height: 100%"
+      />
+    </a>
     <button
       class="navbar-toggler"
       type="button"
@@ -14,11 +31,6 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link <%= path === '/' ? 'active' : '' %>" href="/"
-            >Home</a
-          >
-        </li>
         <li class="nav-item">
           <a
             class="nav-link <%= path === '/pl/daftar' || (path && path.startsWith('/pl/daftar/')) ? 'active' : '' %>"
