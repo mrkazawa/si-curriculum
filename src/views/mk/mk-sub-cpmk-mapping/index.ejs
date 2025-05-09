@@ -1,0 +1,253 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Mapping MK-Sub-CPMK</h2>
+    <p class="text-muted">
+      Pemetaan antara Mata Kuliah dan Sub Capaian Pembelajaran Mata Kuliah
+    </p>
+  </div>
+  <div class="col-auto">
+    <button id="edit-toggle-btn" class="btn btn-warning">
+      <i class="fas fa-edit"></i> Edit
+    </button>
+  </div>
+</div>
+
+<style>
+  /* CSS for the table layout */
+  .table-responsive {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  /* Style for Sub-CPMK descriptions */
+  .sub-cpmk-header small {
+    font-weight: normal;
+  }
+
+  /* Style for the Sub-CPMK cells */
+  .sub-cpmk-cell {
+    vertical-align: middle;
+  }
+
+  /* Style for grouping rows by CPMK */
+  .cpmk-group-header {
+    background-color: #f2f2f2;
+  }
+
+  /* Custom striping styles for MK rows */
+  tr.mk-row-even,
+  tr.mk-row-even td {
+    background-color: #f2f2f2;
+  }
+
+  tr.mk-row-odd,
+  tr.mk-row-odd td {
+    background-color: #fff;
+  }
+
+  /* Remove default table-striped behavior */
+  .table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: transparent;
+  }
+
+  .table-striped > tbody > tr:nth-of-type(even) > * {
+    --bs-table-accent-bg: transparent;
+  }
+</style>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="table-info">
+      <tr>
+        <th rowspan="2" class="align-middle" style="min-width: 60px">
+          Kode MK
+        </th>
+        <th rowspan="2" class="align-middle">Mata Kuliah</th>
+        <th class="text-start" style="min-width: 120px">Kode Sub-CPMK</th>
+        <th class="text-start" style="min-width: 350px">Deskripsi Sub-CPMK</th>
+        <th class="text-center" style="min-width: 80px">Action</th>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+      <% if (mks && mks.length > 0) { %> <% mks.forEach((mk, mkIndex) => { %> <%
+      // Get the CPMKs that are mapped to this MK %> <% const mappedCpmks =
+      mkCpmkMap[mk.kode_mk] || []; %> <% if (mappedCpmks.length === 0) { %>
+      <tr
+        class="<%= mkIndex % 2 === 0 ? 'mk-row-even' : 'mk-row-odd' %>"
+        data-mk-code="<%= mk.kode_mk %>"
+      >
+        <td><%= mk.kode_mk %></td>
+        <td><%= mk.nama_mk %></td>
+        <td colspan="3" class="text-center">
+          No CPMK mappings available for this MK
+        </td>
+      </tr>
+      <% } else { %> <% let totalRows = 0; %> <% mappedCpmks.forEach(cpmkCode =>
+      { %> <% const cpmkSubCpmks = cpmkSubCpmkMap[cpmkCode] || []; %> <%
+      totalRows += cpmkSubCpmks.length || 1; %> <% }); %> <% let isFirstRow =
+      true; %> <% mappedCpmks.forEach(cpmkCode => { %> <% const cpmkSubCpmks =
+      cpmkSubCpmkMap[cpmkCode] || []; %> <% if (cpmkSubCpmks.length === 0) { %>
+      <tr
+        class="<%= mkIndex % 2 === 0 ? 'mk-row-even' : 'mk-row-odd' %>"
+        data-mk-code="<%= mk.kode_mk %>"
+      >
+        <% if (isFirstRow) { %>
+        <td rowspan="<%= totalRows %>"><%= mk.kode_mk %></td>
+        <td rowspan="<%= totalRows %>"><%= mk.nama_mk %></td>
+        <% isFirstRow = false; %> <% } %>
+        <td colspan="3" class="text-center">
+          No Sub-CPMKs available for CPMK <%= cpmkCode %>
+        </td>
+      </tr>
+      <% } else { %> <% cpmkSubCpmks.forEach((subCpmk, subCpmkIndex) => { %>
+      <tr
+        class="<%= mkIndex % 2 === 0 ? 'mk-row-even' : 'mk-row-odd' %> <%= subCpmkIndex === 0 ? 'cpmk-group-header' : '' %>"
+        data-mk-code="<%= mk.kode_mk %>"
+      >
+        <% if (isFirstRow) { %>
+        <td rowspan="<%= totalRows %>"><%= mk.kode_mk %></td>
+        <td rowspan="<%= totalRows %>"><%= mk.nama_mk %></td>
+        <% isFirstRow = false; %> <% } %>
+        <td class="text-start"><%= subCpmk.kode_sub_cpmk %></td>
+        <td class="text-start"><%= subCpmk.deskripsi %></td>
+        <td class="text-center sub-cpmk-cell">
+          <% const isChecked = mkSubCpmkMap[mk.kode_mk] &&
+          mkSubCpmkMap[mk.kode_mk].includes(subCpmk.kode_sub_cpmk); %>
+          <div class="view-mode">
+            <% if (isChecked) { %>
+            <span class="text-success">✔</span>
+            <% } %>
+          </div>
+          <div class="edit-mode" style="display: none">
+            <input type="checkbox" class="mapping-checkbox form-check-input"
+            data-mk="<%= mk.kode_mk %>" data-sub-cpmk="<%= subCpmk.kode_sub_cpmk
+            %>" <%= isChecked ? 'checked' : '' %> />
+          </div>
+        </td>
+      </tr>
+      <% }); %> <% } %> <% }); %> <% } %> <% }); %> <% } else { %>
+      <tr>
+        <td colspan="5" class="text-center">No Mata Kuliah available</td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Get all elements we need to interact with
+    const editToggleBtn = document.getElementById("edit-toggle-btn");
+    const viewModes = document.querySelectorAll(".view-mode");
+    const editModes = document.querySelectorAll(".edit-mode");
+    const checkboxes = document.querySelectorAll(".mapping-checkbox");
+
+    // Initialize tooltips if Bootstrap's tooltip is available
+    if (typeof $ !== "undefined" && $.fn.tooltip) {
+      $('[data-toggle="tooltip"]').tooltip({
+        container: "body",
+        html: true,
+        title: function () {
+          return $(this).attr("data-tooltip-content");
+        },
+      });
+
+      // Only enable tooltips for cells that have values
+      $(".sub-cpmk-cell").each(function () {
+        const hasValue =
+          $(this).find(".view-mode span.text-success").length > 0;
+        if (!hasValue) {
+          $(this).tooltip("disable");
+        }
+      });
+    }
+
+    // We start in view mode
+    let editMode = false;
+
+    // Function to toggle between view and edit modes
+    function toggleEditMode() {
+      editMode = !editMode;
+
+      viewModes.forEach((elem) => {
+        elem.style.display = editMode ? "none" : "block";
+      });
+
+      editModes.forEach((elem) => {
+        elem.style.display = editMode ? "block" : "none";
+      });
+
+      // Update button text
+      if (editMode) {
+        editToggleBtn.innerHTML = '<i class="fas fa-check"></i> Done';
+        editToggleBtn.classList.replace("btn-warning", "btn-success");
+      } else {
+        editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+        editToggleBtn.classList.replace("btn-success", "btn-warning");
+      }
+    }
+
+    // Add event listener for the edit toggle button
+    editToggleBtn.addEventListener("click", toggleEditMode);
+
+    // Handle checkbox changes - mapping/unmapping
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", function () {
+        const kodeMk = this.dataset.mk;
+        const kodeSubCpmk = this.dataset.subCpmk;
+        const isChecked = this.checked;
+
+        // Find the corresponding view mode element
+        const tdCell = this.closest("td");
+        const viewModeElement = tdCell.querySelector(".view-mode");
+
+        // Disable checkbox during update to prevent multiple clicks
+        this.disabled = true;
+
+        // Send the update to the server
+        fetch("/mk/mk-sub-cpmk-mapping/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            kode_mk: kodeMk,
+            kode_sub_cpmk: kodeSubCpmk,
+            isChecked: isChecked.toString(),
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Re-enable checkbox after successful update
+              this.disabled = false;
+
+              // Update the view mode element to reflect the new checkbox state
+              if (isChecked) {
+                viewModeElement.innerHTML =
+                  '<span class="text-success">✔</span>';
+              } else {
+                viewModeElement.innerHTML = "";
+              }
+            } else {
+              // If there was an error, revert the checkbox
+              this.checked = !isChecked;
+              this.disabled = false;
+              alert(
+                "Error updating mapping: " + (data.message || "Unknown error")
+              );
+            }
+          })
+          .catch((error) => {
+            // Handle network or other errors
+            console.error("Error:", error);
+            this.checked = !isChecked;
+            this.disabled = false;
+            alert("Error updating mapping: Network error");
+          });
+      });
+    });
+  });
+</script>
+
+<%- contentFor('title') %> MK-Sub-CPMK Mapping
