@@ -2,10 +2,27 @@
   <div class="col">
     <h2>Visualisasi Distribusi Mata Kuliah</h2>
   </div>
-  <div class="col text-end">
-    <a href="/mk/daftar" class="btn btn-primary">Kembali ke Daftar MK</a>
-  </div>
 </div>
+
+<style>
+  /* Style for MK codes and names */
+  .mk-item {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .mk-code {
+    font-weight: bold;
+    color: #0d6efd;
+  }
+
+  .mk-name {
+    display: block;
+    font-style: italic;
+    color: #495057;
+    font-size: 0.95em;
+  }
+</style>
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped">
@@ -15,7 +32,7 @@
         <th style="width: 60px">SKS</th>
         <th style="width: 60px">Jml MK</th>
         <th colspan="<%= maxMkWajib %>">MK Wajib</th>
-        <th colspan="<%= maxMkPilihan %>">MK-Pil</th>
+        <th colspan="<%= maxMkPilihan %>">MK Pilihan</th>
         <th colspan="<%= maxMkwk %>">MKWK</th>
       </tr>
     </thead>
@@ -30,24 +47,39 @@
         </td>
 
         <% semesterData[i].mkWajib.forEach(mk => { %>
-        <td><%= mk.kode_mk %></td>
+        <td>
+          <div class="mk-item">
+            <span class="mk-code"><%= mk.kode_mk %></span>
+            <span class="mk-name"><%= mk.nama_mk %></span>
+          </div>
+        </td>
         <% }); %> <% for (let j = semesterData[i].mkWajib.length; j <
         maxMkWajib; j++) { %>
         <td></td>
         <% } %> <% semesterData[i].mkPilihan.forEach(mk => { %>
-        <td><%= mk.kode_mk %></td>
+        <td>
+          <div class="mk-item">
+            <span class="mk-code"><%= mk.kode_mk %></span>
+            <span class="mk-name"><%= mk.nama_mk %></span>
+          </div>
+        </td>
         <% }); %> <% for (let j = semesterData[i].mkPilihan.length; j <
         maxMkPilihan; j++) { %>
         <td></td>
         <% } %> <% semesterData[i].mkwk.forEach(mk => { %>
-        <td><%= mk.kode_mk %></td>
+        <td>
+          <div class="mk-item">
+            <span class="mk-code"><%= mk.kode_mk %></span>
+            <span class="mk-name"><%= mk.nama_mk %></span>
+          </div>
+        </td>
         <% }); %> <% for (let j = semesterData[i].mkwk.length; j < maxMkwk; j++)
         { %>
         <td></td>
         <% } %>
       </tr>
       <% } %>
-      <tr class="table-light">
+      <tr class="table-dark">
         <td></td>
         <td class="text-center">
           <strong><%= totalSystemSKS %></strong>
@@ -66,7 +98,7 @@
     <li><strong>SKS</strong>: Total SKS per semester</li>
     <li><strong>Jml MK</strong>: Jumlah Mata Kuliah per semester</li>
     <li><strong>MK Wajib</strong>: Mata Kuliah Wajib</li>
-    <li><strong>MK-Pil</strong>: Mata Kuliah Pilihan</li>
+    <li><strong>MK Pilihan</strong>: Mata Kuliah Pilihan</li>
     <li><strong>MKWK</strong>: Mata Kuliah Wajib Kurikulum</li>
   </ul>
 </div>
