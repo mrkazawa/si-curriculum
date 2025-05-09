@@ -1,38 +1,138 @@
 <div class="container landing-container">
-  <div class="text-center py-5">
-    <h1 class="display-4 mb-4"><%= message %></h1>
-    <p class="lead mb-4">Manage your curriculum data efficiently</p>
+  <div class="text-center py-4">
+    <h1 class="display-4 mb-3"><%= message %></h1>
+    <p class="lead mb-5">Curriculum Management Dashboard</p>
 
-    <!-- Document links section -->
-    <div class="row justify-content-center mt-5">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Important Documents</h5>
+    <!-- Stats Dashboard Section -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-10">
+        <div class="row g-4">
+          <!-- PL Stats -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                  <i class="fas fa-user-graduate me-2"></i> Profil Lulusan
+                </h5>
+              </div>
+              <div
+                class="card-body d-flex flex-column align-items-center justify-content-center"
+              >
+                <h2 class="display-4 fw-bold text-info mb-3"><%= plCount %></h2>
+                <p class="card-text">Total Profil Lulusan</p>
+                <a href="/pl/daftar" class="btn btn-sm btn-outline-info mt-auto"
+                  >View Details</a
+                >
+              </div>
+            </div>
           </div>
-          <div class="card-body">
-            <h5 class="card-title">SI APTIKOM 2024</h5>
-            <p class="card-text">
-              View and download the SI APTIKOM 2024 document.
-            </p>
-            <div class="d-flex gap-2">
-              <a
-                href="/documents/si-aptikom-2024.pdf"
-                target="_blank"
-                class="btn btn-primary"
+
+          <!-- CPL Stats -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                  <i class="fas fa-graduation-cap me-2"></i> CPL
+                </h5>
+              </div>
+              <div
+                class="card-body d-flex flex-column align-items-center justify-content-center"
               >
-                <i class="fas fa-eye"></i> View PDF
-              </a>
-              <a
-                href="/documents/si-aptikom-2024.pdf"
-                download
-                class="btn btn-outline-primary"
+                <h2 class="display-4 fw-bold text-primary mb-3">
+                  <%= cplCount %>
+                </h2>
+                <p class="card-text">Total Capaian Pembelajaran Lulusan</p>
+                <a
+                  href="/cpl/daftar"
+                  class="btn btn-sm btn-outline-primary mt-auto"
+                  >View Details</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- CPMK Stats -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-tasks me-2"></i> CPMK</h5>
+              </div>
+              <div
+                class="card-body d-flex flex-column align-items-center justify-content-center"
               >
-                <i class="fas fa-download"></i> Download
-              </a>
+                <h2 class="display-4 fw-bold text-success mb-3">
+                  <%= cpmkCount %>
+                </h2>
+                <p class="card-text">Total Capaian Pembelajaran Mata Kuliah</p>
+                <a
+                  href="/cpmk/daftar"
+                  class="btn btn-sm btn-outline-success mt-auto"
+                  >View Details</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- BK Stats -->
+          <div class="col-md-6 mt-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                  <i class="fas fa-book me-2"></i> Bahan Kajian
+                </h5>
+              </div>
+              <div
+                class="card-body d-flex flex-column align-items-center justify-content-center"
+              >
+                <h2 class="display-4 fw-bold text-warning mb-3">
+                  <%= bkCount %>
+                </h2>
+                <p class="card-text">Total Bahan Kajian</p>
+                <a
+                  href="/bk/daftar"
+                  class="btn btn-sm btn-outline-warning mt-auto"
+                  >View Details</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- MK Stats -->
+          <div class="col-md-6 mt-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                  <i class="fas fa-clipboard me-2"></i> Mata Kuliah
+                </h5>
+              </div>
+              <div
+                class="card-body d-flex flex-column align-items-center justify-content-center"
+              >
+                <h2 class="display-4 fw-bold text-danger mb-3">
+                  <%= mkCount %>
+                </h2>
+                <p class="card-text">Total Mata Kuliah</p>
+                <a
+                  href="/mk/daftar"
+                  class="btn btn-sm btn-outline-danger mt-auto"
+                  >View Details</a
+                >
+              </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Reference Document Section -->
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-10">
+        <p>
+          This application is made following the standard of <b>Panduan Kurikulum
+          Berbasis OBE/KKNI/SKKNI APTIKOM Versi 2.0 (2024)</b> <i>Program Studi Sarjana Sistem
+          Informasi</i>, which can be downloaded
+          <a href="/documents/si-aptikom-2024.pdf" target="_blank">here</a>.
+        </p>
       </div>
     </div>
   </div>
@@ -51,6 +151,12 @@
   .welcome-text {
     font-size: 2.5rem;
     margin-bottom: 2rem;
+  }
+  .card {
+    transition: transform 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-5px);
   }
 </style>
 
