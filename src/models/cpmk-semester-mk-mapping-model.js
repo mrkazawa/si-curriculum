@@ -3,7 +3,7 @@ const connectDB = require("../config/database");
 const connection = connectDB();
 
 // Model functions for mapping operations
-const CplCpmkSemesterMkMappingModel = {
+const CpmkSemesterMkMappingModel = {
   // Get all CPLs with details
   getAllCpl: (callback) => {
     connection.query(
@@ -12,7 +12,7 @@ const CplCpmkSemesterMkMappingModel = {
     );
   },
 
-  // Get the mapping data for CPL-CPMK-Semester-MK
+  // Get the mapping data for CPMK-Semester-MK
   getMappingData: (callback) => {
     const mappingQuery = `
       SELECT 
@@ -38,4 +38,4 @@ const CplCpmkSemesterMkMappingModel = {
   },
 };
 
-module.exports = CplCpmkSemesterMkMappingModel;
+module.exports = CpmkSemesterMkMappingModel;

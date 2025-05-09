@@ -1,4 +1,4 @@
-const CplCpmkSemesterMkMappingModel = require("../../models/cpl-cpmk-semester-mk-mapping-model");
+const CpmkSemesterMkMappingModel = require("../../models/cpmk-semester-mk-mapping-model");
 const CplModel = require("../../models/cpl-model");
 const CpmkModel = require("../../models/cpmk-model");
 
@@ -18,7 +18,7 @@ exports.renderMappingTable = (req, res) => {
       }
 
       // Get the mapping data
-      CplCpmkSemesterMkMappingModel.getMappingData((mappingErr, mappings) => {
+      CpmkSemesterMkMappingModel.getMappingData((mappingErr, mappings) => {
         if (mappingErr) {
           console.error("Error fetching mappings:", mappingErr);
           return res.status(500).send("Error fetching mappings");
@@ -74,11 +74,11 @@ exports.renderMappingTable = (req, res) => {
           }
         });
 
-        res.render("cpl/cpl-cpmk-semester-mk-mapping/index", {
+        res.render("cpmk/cpmk-semester-mk-mapping/index", {
           cpls: cpls,
           cplCpmkMap: cplCpmkMap,
           semesters: semesters,
-          title: "CPL-CPMK-Semester-MK Mapping",
+          title: "CPMK-Semester-MK Mapping",
         });
       });
     });
