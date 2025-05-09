@@ -50,14 +50,14 @@
     font-size: 0.95em;
   }
 
-  /* Custom striping styles for CPMK rows */
-  tr.cpmk-row-even,
-  tr.cpmk-row-even td {
+  /* Custom striping styles for CPL groups */
+  tr.cpl-group-even,
+  tr.cpl-group-even td {
     background-color: #f2f2f2; /* Gray background for even CPLs */
   }
 
-  tr.cpmk-row-odd,
-  tr.cpmk-row-odd td {
+  tr.cpl-group-odd,
+  tr.cpl-group-odd td {
     background-color: #fff; /* White background for odd CPLs */
   }
 
@@ -113,12 +113,12 @@
     </thead>
     <tbody class="table-group-divider">
       <% if (cpls && cpls.length > 0) { %> <% let cpmkCounter = 0; %> <%
-      cpls.forEach(cpl => { %> <% if (cplCpmkMap[cpl.kode_cpl]) { %> <% const
-      cpmkEntries = Object.entries(cplCpmkMap[cpl.kode_cpl].cpmks); %> <% if
-      (cpmkEntries.length > 0) { %> <% cpmkEntries.forEach(([kode_cpmk,
+      cpls.forEach((cpl, cplIndex) => { %> <% if (cplCpmkMap[cpl.kode_cpl]) { %>
+      <% const cpmkEntries = Object.entries(cplCpmkMap[cpl.kode_cpl].cpmks); %>
+      <% if (cpmkEntries.length > 0) { %> <% cpmkEntries.forEach(([kode_cpmk,
       cpmkData], cpmkIndex) => { %>
       <tr
-        class="<%= cpmkCounter % 2 === 0 ? 'cpmk-row-even' : 'cpmk-row-odd' %>"
+        class="<%= cplIndex % 2 === 0 ? 'cpl-group-even' : 'cpl-group-odd' %>"
       >
         <td
           class="align-middle cpmk-code-cell"
