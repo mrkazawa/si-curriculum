@@ -1,0 +1,215 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Mapping CPL-CPMK-Semester-MK</h2>
+    <p class="text-muted">
+      Pemetaan antara Capaian Pembelajaran Lulusan, Capaian Pembelajaran Mata
+      Kuliah, Semester, dan Mata Kuliah
+    </p>
+  </div>
+</div>
+
+<style>
+  /* Table responsive styling */
+  .table-responsive {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  /* Style for the header cells */
+  thead th {
+    background-color: #cff4fc; /* Match bootstrap table-info class */
+  }
+
+  /* Style for the CPMK cells */
+  .cpmk-cell {
+    vertical-align: middle;
+  }
+
+  /* Style for MK codes */
+  .mk-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mk-item {
+    padding: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .mk-code {
+    font-weight: bold;
+    color: #0d6efd;
+    cursor: pointer;
+  }
+
+  .mk-name {
+    display: block;
+    font-style: italic;
+    color: #495057;
+    font-size: 0.95em;
+  }
+
+  /* Custom striping styles for CPMK rows */
+  tr.cpmk-row-even,
+  tr.cpmk-row-even td {
+    background-color: #f2f2f2; /* Gray background for even CPLs */
+  }
+
+  tr.cpmk-row-odd,
+  tr.cpmk-row-odd td {
+    background-color: #fff; /* White background for odd CPLs */
+  }
+
+  /* Table header styles */
+  .semester-header {
+    text-align: center;
+    min-width: 150px;
+  }
+
+  /* Style for cells with no data */
+  .no-data {
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+  }
+
+  /* Tooltip styles */
+  .custom-tooltip {
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    z-index: 1000;
+    max-width: 350px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    display: none;
+  }
+</style>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="table-info">
+      <tr>
+        <th rowspan="2" class="align-middle" style="min-width: 80px">
+          Kode CPMK
+        </th>
+        <th rowspan="2" class="align-middle" style="min-width: 200px">
+          Deskripsi CPMK
+        </th>
+        <th colspan="<%= semesters.length %>" class="text-center">Semester</th>
+      </tr>
+      <tr>
+        <% if (semesters && semesters.length > 0) { %> <%
+        semesters.forEach(semester => { %>
+        <th class="text-center semester-header" data-semester="<%= semester %>">
+          <%= semester %>
+        </th>
+        <% }) %> <% } %>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+      <% if (cpls && cpls.length > 0) { %> <% let cpmkCounter = 0; %> <%
+      cpls.forEach(cpl => { %> <% if (cplCpmkMap[cpl.kode_cpl]) { %> <% const
+      cpmkEntries = Object.entries(cplCpmkMap[cpl.kode_cpl].cpmks); %> <% if
+      (cpmkEntries.length > 0) { %> <% cpmkEntries.forEach(([kode_cpmk,
+      cpmkData], cpmkIndex) => { %>
+      <tr
+        class="<%= cpmkCounter % 2 === 0 ? 'cpmk-row-even' : 'cpmk-row-odd' %>"
+      >
+        <td
+          class="align-middle cpmk-code-cell"
+          data-cpl-code="<%= cpl.kode_cpl %>"
+          data-cpl-desc="<%= cpl.deskripsi %>"
+        >
+          <%= kode_cpmk %>
+        </td>
+        <td
+          class="align-middle cpmk-desc-cell"
+          data-cpl-code="<%= cpl.kode_cpl %>"
+          data-cpl-desc="<%= cpl.deskripsi %>"
+        >
+          <%= cpmkData.cpmk.deskripsi %>
+        </td>
+        <% semesters.forEach(semester => { %>
+        <td class="cpmk-semester-cell">
+          <% const mks = cpmkData.semesterMks[semester] || []; %>
+          <div class="mk-list">
+            <% if (mks.length > 0) { %> <% mks.forEach(mk => { %>
+            <div class="mk-item">
+              <span class="mk-code" data-semester="<%= semester %>"
+                ><%= mk.kode_mk %></span
+              >
+              <span class="mk-name"><%= mk.nama_mk %></span>
+            </div>
+            <% }) %> <% } %>
+          </div>
+        </td>
+        <% }) %>
+      </tr>
+      <% cpmkCounter++; %> <% }) %> <% } %> <% } %> <% }) %> <% } else { %>
+      <tr>
+        <td colspan="<%= 2 + semesters.length %>" class="text-center">
+          No CPLs available
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Tooltip element -->
+<div id="custom-tooltip" class="custom-tooltip"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize tooltips
+    const tooltip = document.getElementById("custom-tooltip");
+
+    // Add tooltip for CPMK cells (showing CPL info)
+    const cpmkCells = document.querySelectorAll(
+      ".cpmk-code-cell, .cpmk-desc-cell"
+    );
+    cpmkCells.forEach((cell) => {
+      cell.addEventListener("mouseenter", function (e) {
+        const cplCode = this.dataset.cplCode;
+        const cplDesc = this.dataset.cplDesc;
+
+        tooltip.textContent = `${cplCode}: ${cplDesc}`;
+        tooltip.style.display = "block";
+
+        const rect = this.getBoundingClientRect();
+        tooltip.style.left = rect.left + window.scrollX + "px";
+        tooltip.style.top = rect.bottom + window.scrollY + 5 + "px";
+      });
+
+      cell.addEventListener("mouseleave", function () {
+        tooltip.style.display = "none";
+      });
+    });
+
+    // Add tooltip for MK codes (showing semester info)
+    const mkCodes = document.querySelectorAll(".mk-code");
+    mkCodes.forEach((code) => {
+      code.addEventListener("mouseenter", function (e) {
+        const semester = this.dataset.semester;
+
+        tooltip.textContent = `Semester ${semester}`;
+        tooltip.style.display = "block";
+
+        const rect = this.getBoundingClientRect();
+        tooltip.style.left = rect.left + window.scrollX + "px";
+        tooltip.style.top = rect.bottom + window.scrollY + 5 + "px";
+      });
+
+      code.addEventListener("mouseleave", function () {
+        tooltip.style.display = "none";
+      });
+    });
+  });
+</script>
+
+<%- contentFor('title') %> CPL-CPMK-Semester-MK Mapping

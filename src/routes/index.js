@@ -7,6 +7,7 @@ const daftarMkRoutes = require("./mk/daftar-mk-routes");
 const cplPlMappingRoutes = require("./cpl/cpl-pl-mapping-routes");
 const cplSemesterMkMappingRoutes = require("./cpl/cpl-semester-mk-mapping-routes");
 const cplCpmkMkMappingRoutes = require("./cpl/cpl-cpmk-mk-mapping-routes");
+const cplCpmkSemesterMkMappingRoutes = require("./cpl/cpl-cpmk-semester-mk-mapping-routes");
 const bkCplMappingRoutes = require("./bk/bk-cpl-mapping-routes");
 const bkCplMkMappingRoutes = require("./bk/bk-cpl-mk-mapping-routes");
 const mkBkMappingRoutes = require("./mk/mk-bk-mapping-routes");
@@ -102,6 +103,9 @@ const setRoutes = (app) => {
 
   // Use the CPL-CPMK-MK mapping routes with updated path structure
   app.use("/cpl/cpl-cpmk-mk-mapping", cplCpmkMkMappingRoutes);
+
+  // Use the CPL-CPMK-Semester-MK mapping routes with updated path structure
+  app.use("/cpl/cpl-cpmk-semester-mk-mapping", cplCpmkSemesterMkMappingRoutes);
 
   // Use the CPMK routes with updated path structure
   app.use("/cpmk/daftar", daftarCpmkRoutes);
