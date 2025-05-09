@@ -1,6 +1,7 @@
 // Use new structured routes
 const daftarCplRoutes = require("./cpl/daftar-cpl-routes");
 const daftarCpmkRoutes = require("./cpmk/daftar-cpmk-routes");
+const subCpmkRoutes = require("./cpmk/sub-cpmk-routes");
 const daftarPlRoutes = require("./pl/daftar-pl-routes");
 const daftarBkRoutes = require("./bk/daftar-bk-routes");
 const daftarMkRoutes = require("./mk/daftar-mk-routes");
@@ -107,6 +108,9 @@ const setRoutes = (app) => {
 
   // Use the CPMK routes with updated path structure
   app.use("/cpmk/daftar", daftarCpmkRoutes);
+
+  // Use the Sub-CPMK routes with updated path structure
+  app.use("/cpmk/sub-cpmk", subCpmkRoutes);
 
   // Use the BK routes with updated path structure
   app.use("/bk/daftar", daftarBkRoutes);

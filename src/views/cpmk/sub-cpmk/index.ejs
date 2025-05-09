@@ -1,0 +1,48 @@
+<div class="row mb-3">
+  <div class="col">
+    <h2>Sub Capaian Pembelajaran Mata Kuliah (Sub-CPMK)</h2>
+  </div>
+  <div class="col text-end">
+    <a href="/cpmk/sub-cpmk/form" class="btn btn-primary">Add New Sub-CPMK</a>
+  </div>
+</div>
+
+<table class="table table-bordered table-striped">
+  <thead class="table-info align-top">
+    <tr>
+      <th>No</th>
+      <th>Kode Sub-CPMK</th>
+      <th>Deskripsi Sub-CPMK</th>
+      <th style="width: 130px">Actions</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    <% if (subCpmks && subCpmks.length > 0) { %> <% subCpmks.forEach((subCpmk,
+    index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= subCpmk.kode_sub_cpmk %></td>
+      <td><%= subCpmk.deskripsi %></td>
+      <td>
+        <a
+          href="/cpmk/sub-cpmk/edit/<%= subCpmk.id %>"
+          class="btn btn-sm btn-warning me-2"
+          >Edit</a
+        >
+        <a
+          href="/cpmk/sub-cpmk/delete/<%= subCpmk.id %>"
+          class="btn btn-sm btn-danger"
+          onclick="return confirm('Are you sure you want to delete this Sub-CPMK?')"
+          >Delete</a
+        >
+      </td>
+    </tr>
+    <% }) %> <% } else { %>
+    <tr>
+      <td colspan="4" class="text-center">No Sub-CPMKs available</td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<%- contentFor('title') %> Sub-CPMK
